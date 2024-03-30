@@ -1,0 +1,62 @@
+.card {
+    width: 100%;
+    height: 254px;
+    border-radius: 20px;
+    transition: all .3s;
+    background: none;
+   }
+   
+   .card2 {
+    width: 400px;
+    height: 300px;
+    background-color: #1a1a1a;
+    transition: all .2s;
+    transform: scale(1.05);
+    border-radius: 20px;
+    text-align: center;
+   }
+
+   .viewbox-1{
+    margin: 10px;
+    padding: 20px;
+    display: flex;
+align-items: center;
+justify-content: space-around;
+   }
+   .viewbox-1 h1{
+    font-size: 50px;
+   }
+   .card2 img{
+    height: 300px;
+    width: 300px;
+   }
+   .hr{
+border: 2px solid black;
+background-color: black;
+font-weight: bolder;
+   }
+
+   .bookbtn{
+    border: none;
+    background: none;
+    color: white;
+width: 100%;
+padding: 10px;
+border: 2px solid white;
+   }
+   .bookbtn:hover{
+    background-color: black;
+    border-radius: 10px;
+    transform: scale(1.1);
+   }
+   .viewbox-2{
+
+   }
+   .viewbox-2 div h3{
+    color: white;
+    font-size: 35px;
+   }
+   .viewbox-2 div p{
+    color: white;
+    font-size: 20px;
+   }
