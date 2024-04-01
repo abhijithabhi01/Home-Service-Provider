@@ -20,3 +20,27 @@ export const workerRegisterAPI = async(userDetails,reqHeader)=>{
 export const workerloginAPI = async(user)=>{
     return await commonAPI("POST",`${BASE_URL}/provider/login`,user,"")
 }
+// get all users
+export const getallUsersAPI = async()=>{
+    return await commonAPI("GET",`${BASE_URL}/user/get`,"","")
+}
+// Update user profile API
+export const UserprofileupdateAPI = async(userid,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/user/update/${userid}`,reqBody,reqHeader)
+}
+// get all Workers
+export const getallworkersAPI = async()=>{
+    return await commonAPI("GET",`${BASE_URL}/provider/get`,"","")
+}
+// Update worker profile API
+export const workerprofileupdateAPI = async(userid,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/update/${userid}`,reqBody,reqHeader)
+}
+// get all Category
+export const getAllCategoryAPI = async()=>{
+    return await commonAPI("GET",`${BASE_URL}/description/get`,"","")
+}
+// book worker
+export const bookWorkerAPI = async(wid,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/user/booking/${wid}`,reqBody,reqHeader)
+}

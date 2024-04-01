@@ -1,13 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import img from '../../images/Worker-logo-design-template-vector-removebg-preview.png'
 import './dash.css'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Table from 'react-bootstrap/Table';
 import WorkerProfile from './UserProfile';
-
+import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router-dom';
 
 function UserDash() {
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const navigate = useNavigate()
+    const handlelogout = ()=>{
+  
+        sessionStorage.removeItem("Activeuser")
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("logger")
+      navigate('/')
+    //   window.location.reload();
+      }
     return (
         <>
 
@@ -20,8 +33,8 @@ function UserDash() {
                         <h3 className='mt-4 ms-2'>User</h3>
                     </div>
                     <div className='d-flex'>
-                        <h5 className='m-2 text-danger'>Logout</h5>
-                        <h5 className='m-2'> <a href="/" style={{ textDecoration: 'none', color: 'white' }}>Home</a></h5>
+                        <h5 onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer' }}>Logout</h5>
+                        <h5 className='m-2'> <a href="/" style={{ textDecoration: 'none', color: 'white',cursor:'pointer' }}>Home</a></h5>
                     </div>
 
                 </div>
@@ -112,6 +125,35 @@ function UserDash() {
                     </Tab>
                 </Tabs>
             </div>
+
+
+
+
+
+
+
+
+
+            <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title ><h1 >Logout</h1></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='editform'>
+          <button  className='updatebtn' onClick={handleClose}>Cancel</button>
+          <button className='cancelbtn' onClick={handlelogout}>
+            Logout
+          </button>
+         
+          </div>
+        </Modal.Body>
+      </Modal>
         </>
     )
 }

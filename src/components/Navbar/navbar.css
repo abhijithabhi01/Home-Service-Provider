@@ -161,3 +161,7 @@ i {
 		left: -25px;
 	}
 }
+
+.nav-item:hover{
+	text-decoration: 1px white underline ;
+}

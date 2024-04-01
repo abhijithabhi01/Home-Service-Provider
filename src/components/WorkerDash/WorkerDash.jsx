@@ -1,30 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 import img from '../../images/Worker-logo-design-template-vector-removebg-preview.png'
 import './dash.css'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Table from 'react-bootstrap/Table';
 import WorkerProfile from './WorkerProfile';
-
+import { useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
 function WorkerDash() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const navigate = useNavigate()
+  const handlelogout = ()=>{
+  
+      sessionStorage.removeItem("Activeuser")
+      sessionStorage.removeItem("token")
+      sessionStorage.removeItem("logger")
+    navigate('/')
+  //   window.location.reload();
+    }
   return (
     <>
 
 <div>
-    <div className='d-flex align-items-center justify-content-between ps-5 pe-5 p-2 nav'>
-        <div className='d-flex'>
-            <img src={img} alt="" 
-            style={{height:'80px',width:'80px',border:'2px solid black',borderRadius:'50%'}}
-            />
-            <h3 className='mt-4 ms-2'>WORKER</h3>
-        </div>
-<div className='d-flex'>
-    <h5 className='m-2 text-danger'>Logout</h5>
-   <h5 className='m-2'> <a  href="/" style={{textDecoration:'none',color:'white'}}>Home</a></h5>
-</div>
+<div className='d-flex align-items-center justify-content-between ps-5 pe-5 p-2 nav'>
+                    <div className='d-flex'>
+                        <img src={img} alt=""
+                            style={{ height: '80px', width: '80px', border: '2px solid black', borderRadius: '50%' }}
+                        />
+                        <h3 className='mt-4 ms-2'>User</h3>
+                    </div>
+                    <div className='d-flex'>
+                        <h5 onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer' }}>Logout</h5>
+                        <h5 className='m-2'> <a href="/" style={{ textDecoration: 'none', color: 'white',cursor:'pointer' }}>Home</a></h5>
+                    </div>
 
-    </div>
+                </div>
 
     <div className='userprofile'>
   
@@ -108,6 +121,35 @@ function WorkerDash() {
       </Tab>
     </Tabs>
 </div>
+
+
+
+
+
+
+
+
+
+<Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title ><h1 >Logout</h1></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='editform'>
+          <button  className='updatebtn' onClick={handleClose}>Cancel</button>
+          <button className='cancelbtn' onClick={handlelogout}>
+            Logout
+          </button>
+         
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   )
 }

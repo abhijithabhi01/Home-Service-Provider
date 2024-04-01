@@ -47,11 +47,11 @@ const SignIn = () => {
           if(result.status == 200){
             setLoading(false)
             toast.success('Login success')
-            sessionStorage.setItem("Current-user",JSON.stringify(result.data))
+            sessionStorage.setItem("Activeuser",JSON.stringify(result.data))
             sessionStorage.setItem("token",result.data.token)
             setTimeout(() => {
                 navigate('/')
-            }, 5000);
+            }, 3000);
        // console.log(result.data);
             setUserDetails({
                 email:"",
@@ -89,12 +89,12 @@ const SignIn = () => {
             setLoading(false)
             toast.success('Login success')
             console.log(result.data);
-            sessionStorage.setItem("Current-Worker",JSON.stringify(result.data))
+            sessionStorage.setItem("Activeuser",JSON.stringify(result.data))
             sessionStorage.setItem("token",result.data.token)
             sessionStorage.setItem("logger",result.data.logger)
             setTimeout(() => {
                 navigate('/')
-            }, 5000);
+            }, 3000);
        // console.log(result.data);
             setUserDetails({
                 email:"",
@@ -168,16 +168,10 @@ const SignIn = () => {
     
     
                         <ToastContainer
-position="top-right"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover={false}
+
+
 theme="colored"
+style={{marginTop:'900px',marginLeft:'-90%'}}
 />
         </>
     );

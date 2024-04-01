@@ -76,8 +76,8 @@ const SignUp = () => {
     const handleuserregister = async (e) => {
 
         e.preventDefault()
-        const { name, address, contactnumber, email, password } = userDetails
-        if (!name || !address || !contactnumber || !email || !password) {
+        const { name, address, contactnumber, email, password ,userimage} = userDetails
+        if (!name || !address || !contactnumber || !email || !password || !userimage) {
             toast.info('please fill the form completely')
         }
         else {
@@ -100,6 +100,7 @@ const SignUp = () => {
                     password: "",
                     userimage: ""
                 })
+                setpreview("")
 
             }
             else {
@@ -113,6 +114,7 @@ const SignUp = () => {
                     password: "",
                     userimage: ""
                 })
+                setpreview("")
                 console.log(result);
             }
 
@@ -244,6 +246,7 @@ const SignUp = () => {
                         value={userDetails.contactnumber}
                         maxLength={'10'}
                         onChange={(e) => setUserDetails({ ...userDetails, contactnumber: e.target.value })}
+                        
                     />
                 </div>
                 <div className="input-field">
@@ -409,6 +412,7 @@ pauseOnFocusLoss
 draggable
 pauseOnHover={false}
 theme="colored"
+style={{marginTop:'100px'}}
 />
 
             {/* loader */}
