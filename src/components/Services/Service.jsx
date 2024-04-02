@@ -31,7 +31,7 @@ const Service = () => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-console.log(category);
+//console.log(category);
     return (
         <section className="container" style={{ marginTop: 200, marginBottom: 200 }}>
             <div className='mb-5 section-title text-center'>

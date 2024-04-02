@@ -44,3 +44,19 @@ export const getAllCategoryAPI = async()=>{
 export const bookWorkerAPI = async(wid,reqBody,reqHeader)=>{
     return await commonAPI("POST",`${BASE_URL}/user/booking/${wid}`,reqBody,reqHeader)
 }
+// get workers by worktype
+export const getWorkerbytypeAPI = async(title)=>{
+    return await commonAPI("GET",`${BASE_URL}/getbyworktype/${title}`,"","")
+}
+// get work request for worker
+export const getworkerrequestAPI = async(workerid,reqHeader)=>{
+    return await commonAPI("GET",`${BASE_URL}/getAllRequestsByworker/${workerid}`,"",reqHeader)
+}
+// approve request for worker
+export const approveUserWorkRequestAPI = async(id,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/approvetrue/${id}`,"",reqHeader)
+}
+// approve request for worker
+export const declineUserWorkRequestAPI = async(id,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/approvefalse/${id}`,"",reqHeader)
+}

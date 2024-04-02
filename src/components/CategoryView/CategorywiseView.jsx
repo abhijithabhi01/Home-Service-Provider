@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getAllCategoryAPI, getallworkersAPI } from '../../Services/allAPI';
-import { BASE_URL } from '../../Services/BASE_URL';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import logo from '../../images/Worker-logo-design-template-vector-removebg-preview.png';
+import { getAllCategoryAPI, getWorkerbytypeAPI, getallworkersAPI } from '../../Services/allAPI';
+import { BASE_URL } from '../../Services/BASE_URL';
 import './style.css';
-import Modal from 'react-bootstrap/Modal';
-import { useParams } from 'react-router-dom';
 
 function CategorywiseView() {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const [currentCategory, setCurrentCategory] = useState({});
+    const { catid } = useParams();
+    const [currentCategory, setCurrentCategory] = useState(null);
     const [allCategories, setAllCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState('');
-    const [logger, setLogger] = useState('');
-    const [existingUser, setExistingUser] = useState({});
-    const [allUsers, setAllUsers] = useState([])
-    const [preview, setpreview] = useState("")
-    const [currentUser, setCurrentUser] = useState([])
     const [error, setError] = useState(null);
-    const { catid } = useParams();
-
+    const [allUsers, setAllUsers] = useState([]);
+    const [existingUser,setExistingUser] = useState([])
+    const [token, setToken] = useState('');
+    const [categoryWorkers, setCategoryWorkers] = useState([]);
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchAllCategories = async () => {
             try {
@@ -38,10 +30,31 @@ function CategorywiseView() {
             }
         };
         fetchAllCategories();
+    
     }, []);
 
     useEffect(() => {
-        const category = allCategories.find((cat) => cat._id === catid);
+        const fetchAllUsers = async () => {
+            try {
+                const result = await getallworkersAPI();
+                setAllUsers(result.data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchAllUsers();
+    }, []);
+
+    useEffect(() => {
+        const getcurrentUser = JSON.parse(sessionStorage.getItem("Activeuser"));
+        if (getcurrentUser) {
+            setExistingUser(getcurrentUser);  
+            setToken(sessionStorage.getItem("token"));
+        }
+    }, []);
+
+    useEffect(() => {
+        const category = allCategories.find(cat => cat._id === catid);
         setCurrentCategory(category);
     }, [catid, allCategories]);
 
@@ -53,27 +66,31 @@ function CategorywiseView() {
         return <div>Error: Category not found.</div>;
     }
 
-
-        const getcurrentUser = JSON.parse(sessionStorage.getItem("Activeuser"));
-        if (getcurrentUser) {
-          setExistingUser(getcurrentUser);
-          setLogger(getcurrentUser.logger);
-          setToken(sessionStorage.getItem("token"));
-
-          const FetchALLUsers = async () => {
-            const result = await getallworkersAPI();
-            setAllUsers(result.data);
-          };
-       
-          const FetchCurrentUser = () => {
-            const user = allUsers.find((user) => user._id == existingUser.existingUser._id);
-            setCurrentUser(user);
-        }}
-   
-    
- 
-        console.log(allUsers); 
-console.log(currentUser);
+// console.log(currentCategory);
+const fetchwokerbytype = async () => {
+    const worktype = currentCategory.worktype
+ console.log(worktype);
+    try {
+            
+            const result = await getWorkerbytypeAPI(worktype);
+            if (result.status == 200) {
+                console.log(result.data);
+                setCategoryWorkers(result.data)
+        }
+    } catch (error) {
+        console.error("Error fetching workers by type:", error);
+    }
+};
+fetchwokerbytype();
+const handlebookuser = (wid) => {
+    if (categoryWorkers) {
+      navigate(`/booking/${wid}`, { state: { categoryWorkers } });
+    } else {
+      console.error('Property details are not available.');
+    }
+  };
+  
+// console.log(categoryWorkers);
     return (
         <>
             <div>
@@ -93,12 +110,43 @@ console.log(currentUser);
                     </div>
                     <hr className='hr' />
                     <div className='viewbox-2'>
-                        
                         <div className='p-5'>
-                        <h3 className='m-2'>Description</h3>
+                            <h3 className='m-2'>Description</h3>
                             <p>{currentCategory.description}</p>
                         </div>
                     </div>
+                    <div className='worklistdiv'>
+    <table className='listtable' style={{height:'fit-content'}}>
+      <thead className='tablehead'>
+        <tr className='table-row'>
+          <th className='srno p-2'>SR NO</th>
+          <th className='name'>Workers Name</th>
+          <th className='location'>Location</th>
+          <th className='status'>Price per Day</th>
+          <th className='status'>Book Now</th>
+        </tr>
+      </thead>
+      <tbody className='table-body'>
+                                {categoryWorkers.map((worker, index) => (
+                                    <tr key={index} className='table-row'>
+                                        <td className='srno p-2'>{index + 1}</td>
+                                        <td className='name'>{worker.name}</td>
+                                        <td className='location'>{worker.district}</td>
+                                        <td className='status'>{worker.price}</td>
+                                        <th className='status'>
+                                       {token ? <button onClick={(e)=>handlebookuser(worker._id)} style={{ background: 'blue', border: 'none', padding: '0px 10px', color: "white", fontWeight: 'bold', borderRadius: '5px' }}>
+                                                Book
+                                            </button> :
+                                         <Link to={'/login'}>   <button  style={{ background: 'blue', border: 'none', padding: '0px 10px', color: "white", fontWeight: 'bold', borderRadius: '5px' }}>
+                                         Book
+                                     </button></Link>
+                                            }
+                                        </th>
+                                    </tr>
+                                ))}
+                            </tbody>
+    </table>
+    </div>
                 </div>
             </div>
         </>

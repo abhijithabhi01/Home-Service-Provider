@@ -50,11 +50,44 @@
     border: 2px solid black;
 }
 .srno{
-width: 100px;
+width: 50px;
 }
 .name{
     width: 500px;
 }
 .location{
     width: 500px;
+}
+.date{
+    width: 150px;
+}
+.status{
+    width: 100px;
+}
+.approvebtn{
+ margin: 20px 0px;
+background-color: rgb(43, 191, 43);
+color: white;
+padding: 5px;
+border: 2px solid black;
+  border-radius: 5px;
+}
+
+.declinebtn{
+    margin: 20px 0px;
+    background-color: rgb(230, 17, 17);
+    color: white;
+    padding: 5px 10px;
+    border: 2px solid black;
+      border-radius: 5px;
+}
+.approvebtn:hover{
+    background-color: rgb(255, 248, 248);
+    color: black;
+    border: 2px solid green;
+}
+.declinebtn:hover{
+    color: black;
+    background-color: rgb(255, 248, 248);
+    border: 2px solid rgb(255, 0, 0);
 }

@@ -20,7 +20,7 @@ function App() {
           <Route path='/worker-dashboard' element={<WorkerDash/>} />
           <Route path='/user-dashboard' element={<UserDash/>} />
           <Route path='/category-view-div/:catid' element={<CategorywiseView/>} />
-          <Route path='/booking' element={<Booking />} />
+          <Route path='/booking/:wid' element={<Booking />} />
         </Routes>
       </Router>
     </div>
