@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import img from '../../images/Worker-logo-design-template-vector-removebg-preview.png'
 import './dash.css'
 import Tab from 'react-bootstrap/Tab';
@@ -7,11 +7,36 @@ import WorkerProfile from './UserProfile';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
+import { getworklistAPI, paymentAPI } from '../../Services/allAPI';
+import Spinner from 'react-bootstrap/Spinner';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function UserDash() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const [loader,setloader] = useState(false)
+    const [ispayment,setispayment] = useState(false)
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [cardDetails, setCardDetails] = useState({
+        cardno: '',
+        cardname: '',
+        cvv: '',
+        mm:""
+    });
+    const handleShow2 = (request) => {
+        setSelectedRequest(request);
+        setShow2(true);
+    };
+    console.log(cardDetails);
+    const [token, setToken] = useState('');
+    const [userid, setuserid] = useState('');
+    const [existingUser, setExistingUser] = useState({});
+    const [worklist,setworklist] = useState([])
     const navigate = useNavigate()
     const handlelogout = ()=>{
   
@@ -21,6 +46,78 @@ function UserDash() {
       navigate('/')
     //   window.location.reload();
       }
+      
+  useEffect(() => {
+    const currentUser = JSON.parse(sessionStorage.getItem('Activeuser'));
+    if (currentUser) {
+      setExistingUser(currentUser.existingUser);
+      setToken(sessionStorage.getItem('token'));
+      setuserid(currentUser.existingUser._id); // Fix this line
+    }
+  }, []);
+      const fetchworklist = async()=>{
+        if(token){
+            const reqHeader = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+              const result = await getworklistAPI(reqHeader)
+              if(result.status == 200){
+                setworklist(result.data)
+                //console.log(result);
+              }
+              else{
+                console.log(result);
+              }
+        }
+        else{
+
+        }
+      }
+      useEffect(()=>{
+        fetchworklist()
+      },[existingUser])
+
+
+
+      const handlepay = async(id)=>{
+        // console.log(id);
+    const {cardno,cardname,cvv,mm} = cardDetails
+if(!cardno || !cardname || !cvv || !mm){
+    toast.info(`Please Fill the Details Completely`)
+}
+else{
+    setloader(true)
+    if(token){
+      const reqHeader = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+        const reqBody = {}
+        const result = await paymentAPI(id,reqBody,reqHeader)
+        setispayment(true)
+        if(result.status == 200){
+          fetchworklist()
+          setTimeout(() => {
+            setloader(false)
+            toast.success(`Payment Success`)
+            handleClose2()
+          
+        }, 4000);
+        }
+        else{
+          toast.error(`Something went wrong,try again later`)
+        }
+       
+      }
+      else{
+        toast.error(`Something went wrong,try again later`)
+      
+      }
+
+}
+}
+console.log(worklist);
     return (
         <>
 
@@ -52,65 +149,74 @@ function UserDash() {
                     <Tab eventKey="worklist" title="Work Status">
 
                         <div className='worklistdiv'>
-                            <table className='listtable'>
-                                <thead className='tablehead'>
-                                    <tr className='table-row'>
-                                        <th className='srno'>SR NO</th>
-                                        <th className='name'>Employee Name</th>
-                                        <th className='location'>Location</th>
-                                        <th>Work</th>
-                                        <th className='status'>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className='table-body'>
-                                    <tr className='table-row'>
-                                        <td className='srno'>1</td>
-                                        <td className='name'>Mark</td>
-                                        <td className='location'>Otto</td>
-                                        <td>Otto</td>
-                                        <td className='status'>@mdo</td>
-                                    </tr>
+                        <table className='listtable'>
+                <thead className='tablehead'>
+                  <tr className='table-row'>
+                    <th className='srno'>SR NO</th>
+                    <th className='name'>Worker Name</th>
+                    <th className='date'>Date</th>
+                    <th className='location'>Location</th>
+                    <th className='service'>Service</th>
+                    <th className='status'>Charge</th>
+                    <th className='status'>Status</th>
+                    <th className='status'>Action</th>
+                    
+                  </tr>
+                </thead>
+                {worklist.length > 0 ? (
+                  <tbody className='table-body'>
+                    {worklist.map((request, index) => (
+                      <tr className='table-row' key={request._id}>
+                        <td className='srno'>{index + 1}</td>
+                        <td className='name'>{request.bookingworkername}</td>
+                        <td>{request.date}</td>
+                        <td className='location'>
+                          <p>{request.location}</p>
+                          <a href={request.locationURL} target='blank'>
+                            {request.locationURL}
+                          </a>
+                        </td>
+                        <td className='status'>{request.service}</td>
+                        <td className='status'>{request.price}</td>
+                        <td className='status'>{request.status  ? `Work Accepted` : `Work not Accepted`}</td>
+                        {request.payment ? (
+  request.status ? (
+    <td className='status'>Payment Done</td>
+  ) : (
+    <p>
+      Worker has Declined the Work
+      Your Payment will be Credited back to your Account</p>
+  )
+) : (
+  <td className='status'>
+    {request.status ? (
+      <button className='p-2' onClick={(e) => handleShow2(request)} style={{border:'3px solid black',backgroundColor:'blue',color:'white',width:'100%'}}>Pay</button>
+    ) : (
+      `Work not Accepted`
+    )}
+  </td>
+)}
 
-                                </tbody>
-                                <tbody className='table-body'>
-                                    <tr className='table-row'>
-                                        <td className='srno'>1</td>
-                                        <td className='name'>Mark</td>
-                                        <td className='location'>Otto</td>
-                                        <td>Otto</td>
-                                        <td className='status'>@mdo</td>
-                                    </tr>
 
-                                </tbody>
-                                <tbody className='table-body'>
-                                    <tr className='table-row'>
-                                        <td className='srno'>1</td>
-                                        <td className='name'>Mark</td>
-                                        <td className='location'>Otto</td>
-                                        <td>Otto</td>
-                                        <td className='status'>@mdo</td>
-                                    </tr>
 
-                                </tbody>
-                                <tbody className='table-body'>
-                                    <tr className='table-row'>
-                                        <td className='srno'>1</td>
-                                        <td className='name'>Mark</td>
-                                        <td className='location'>Otto</td>
-                                        <td className='status'>@mdo</td>
-                                    </tr>
-
-                                </tbody>
-                                <tbody className='table-body'>
-                                    <tr className='table-row'>
-                                        <td className='srno'>1</td>
-                                        <td className='name'>Mark</td>
-                                        <td className='location'>Otto</td>
-                                        <td className='status'>@mdo</td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
+                        {/* <td className='status'>
+                     
+                          <button className='approvebtn'>Approve</button>
+                          <button  className='declinebtn'>Decline</button>
+                        </td> */}
+                      </tr>
+                    ))}
+                  </tbody>
+                ) : (
+                  <tbody>
+                    <tr>
+                      <td colSpan='7' style={{ textAlign: 'center' }}>
+                        No Request Available Now
+                      </td>
+                    </tr>
+                  </tbody>
+                )}
+              </table>
                         </div>
                     </Tab>
 
@@ -154,6 +260,167 @@ function UserDash() {
           </div>
         </Modal.Body>
       </Modal>
+
+
+
+
+
+
+      <Modal
+                show={show2}
+                onHide={handleClose2}
+                backdrop="static"
+                keyboard={false}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Payment</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+
+                  
+                    <div style={{ display: 'grid', gridTemplateColumns: 'auto', gap: '0px'}}>
+                    <div style={{ width: '100%', background: 'rgb(255, 250, 235)', boxShadow: '0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1)' }}>
+                   
+                      <div style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}>
+                        <div style={{ display: 'grid', gap: '10px' }}>
+                          <div>
+                           
+                          {selectedRequest && (
+                           <>
+                                <h5 style={{color:"black"}}>Worker Name: {selectedRequest._id}</h5>
+                                <div className='d-flex'>
+                                  <h5 style={{color:"black"}}>Booking:</h5>
+                                  <div className='ms-2'>
+                                <p style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>date: {selectedRequest.date}<span className='ms-2'>{}</span></p>
+                                {/* <p style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>Time:<span className='ms-2'>{}</span></p> */}
+                                </div>
+                                </div>
+                                <h5 style={{color:"black"}}>Service: {selectedRequest.service}</h5>
+                                <h5 style={{color:"black"}}>Location: {selectedRequest.location}</h5>
+                                
+                           </>
+                          )  }
+                          </div>
+                          <hr style={{ height: '1px', backgroundColor: 'rgba(16, 86, 82, .75)', border: 'none' }} />
+              
+                          
+              
+        
+              <p style={{color:'black',fontSize:'18px'}}>Payment Method : Online Payment</p>
+              
+             
+                  <div className='payonliediv'>
+              
+                      
+                               {/* card */}   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-end', width: '410px', height: '200px', backgroundImage: 'radial-gradient(circle 897px at 9% 80.3%, rgba(55, 60, 245, 1) 0%, rgba(234, 161, 15, 0.9) 100.2%)', borderRadius: '10px', padding: '20px', fontFamily: 'Arial, Helvetica, sans-serif', position: 'relative', gap: '15px',margin:'0px 0px 0px 5px' }}>
+                                  <h2 style={{color:"black"}}>Card Details</h2>
+                            <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', height: 'fit-content', position: 'absolute', top: '0', left: '0', padding: '18px' }}>
+                      
+                              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="23" height="23" viewBox="0 0 48 48" style={{ height: '40px', width: 'auto' }}>
+                                <path fill="#ff9800" d="M32 10A14 14 0 1 0 32 38A14 14 0 1 0 32 10Z"></path>
+                                <path fill="#d50000" d="M16 10A14 14 0 1 0 16 38A14 14 0 1 0 16 10Z"></path>
+                                <path fill="#ff3d00" d="M18,24c0,4.755,2.376,8.95,6,11.48c3.624-2.53,6-6.725,6-11.48s-2.376-8.95-6-11.48C20.376,15.05,18,19.245,18,24z"></path>
+                              </svg>
+                            </div>
+                            <div style={{ width: '100%', height: 'fit-content', display: 'flex', flexDirection: 'column' }}>
+                              <label htmlFor="cardNumber" style={{ fontSize: '8px', letterSpacing: '1.5px', color: '#e2e2e2', width: '100%' }}>CARD NUMBER</label>
+                              <input id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" name="cardNumber" type="text" style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'white', caretColor: 'red', fontSize: '13px', height: '25px', letterSpacing: '1.5px', width: '100%' }} maxLength={'16'}
+                                onChange={(e)=>setCardDetails({...cardDetails,cardno:e.target.value})}
+                                value={cardDetails.cardno}
+                              />
+                            </div>
+                            <div style={{ width: '100%', height: '45px', display: 'flex', gap: '10px' }}>
+                              <div style={{ width: '60%', height: 'fit-content', display: 'flex', flexDirection: 'column' }}>
+                                <label htmlFor="holderName" style={{ fontSize: '8px', letterSpacing: '1.5px', color: '#e2e2e2', width: '100%' }}>CARD HOLDER</label>
+                                <input id="holderName" placeholder="NAME" type="text" style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'white', caretColor: 'red', fontSize: '13px', height: '25px', letterSpacing: '1.5px' }}  maxLength={'16'}
+                                onChange={(e)=>setCardDetails({...cardDetails,cardname:e.target.value})}
+                                value={cardDetails.cardname}
+                                />
+                              </div>
+                              <div style={{ width: '30%', height: 'fit-content', display: 'flex', flexDirection: 'column' }}>
+                                <label htmlFor="expiry" style={{ fontSize: '8px', letterSpacing: '1.5px', color: '#e2e2e2', width: '100%' }}>VALID THRU</label>
+                                <input id="expiry" placeholder="MM/YY" type="text" style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'white', caretColor: 'red', fontSize: '13px', height: '25px', letterSpacing: '1.5px', width: '100%' }}  maxLength={'5'}
+                                 onChange={(e)=>setCardDetails({...cardDetails,mm:e.target.value})}
+                                 value={cardDetails.mm}
+                                />
+                              </div>
+                              <div style={{ width: '10%', height: 'fit-content', display: 'flex', flexDirection: 'column' }}>
+                                <label htmlFor="cvv" style={{ fontSize: '8px', letterSpacing: '1.5px', color: '#e2e2e2', width: '100%' }}>CVV</label>
+                                <input placeholder="***" maxLength="3" id="cvv" type="password" style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'white', caretColor: 'red', fontSize: '13px', height: '25px', letterSpacing: '1.5px', width: '100%' }} 
+                                 onChange={(e)=>setCardDetails({...cardDetails,cvv:e.target.value})}
+                                 value={cardDetails.cvv}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                                  <hr style={{ height: '1px', backgroundColor: 'rgba(16, 86, 82, .75)', border: 'none' }} />
+                                
+                                  <div className="payments">
+                                  
+                                    <div className="details" style={{ display: 'grid', gridTemplateColumns: '5fr 1fr', padding: '0px', gap: '5px' }}>
+                                      
+                                      <span style={{ fontSize: '18px', fontWeight: '600', color: '#000000', margin: 'auto auto auto 0' }}>Total:</span>
+                                      <span style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>{selectedRequest && selectedRequest.price }</span>
+                                    </div>
+                                  </div>
+                                  <div style={{ width: '100%', background: 'rgb(255, 250, 235)', boxShadow: '0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1)'}}>
+                              <div style={{ display:'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 10px 10px 20px', }}>
+                              
+                                <button  style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', height: '36px', background: 'green', boxShadow: '0px 0.5px 0.5px rgba(16, 86, 82, .75), 0px 1px 0.5px rgba(16, 86, 82, .75)', borderRadius: '7px', border: '1px solid rgb(16, 86, 82)', color: 'white', fontSize: '18px', fontWeight: '600', transition: 'all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1)' }} onClick={(e)=>handlepay(selectedRequest._id)}>Pay Now</button>
+                              </div>
+                            </div>
+                              </div>
+                              {loader && <div style={{margin:'-400px 0px 0px 35%'}}>
+  
+  <div className="dot-spinner">
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+</div>
+
+</div>
+}   
+                              
+                            </div>
+                          
+                  </div>
+              
+                        </div>
+                  </div>
+        
+   
+        </Modal.Body>
+      
+      </Modal>
+
+
+
+
+
+
+
+
+ 
+
+<ToastContainer
+position="top-right"
+autoClose={2500}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover={false}
+theme="colored"
+/>
+
         </>
     )
 }

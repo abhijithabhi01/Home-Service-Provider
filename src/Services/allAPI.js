@@ -53,10 +53,22 @@ export const getworkerrequestAPI = async(workerid,reqHeader)=>{
     return await commonAPI("GET",`${BASE_URL}/getAllRequestsByworker/${workerid}`,"",reqHeader)
 }
 // approve request for worker
-export const approveUserWorkRequestAPI = async(id,reqHeader)=>{
-    return await commonAPI("PUT",`${BASE_URL}/worker/approvetrue/${id}`,"",reqHeader)
+export const approveUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/approvetrue/${id}`,reqBody,reqHeader)
+}
+// work donwe by worker
+export const workdoneAPI = async(id,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/workdone/${id}`,"",reqHeader)
+}
+
+export const paymentAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/payment/${id}`,reqBody,reqHeader)
 }
 // approve request for worker
-export const declineUserWorkRequestAPI = async(id,reqHeader)=>{
-    return await commonAPI("PUT",`${BASE_URL}/worker/approvefalse/${id}`,"",reqHeader)
+export const declineUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/approvefalse/${id}`,reqBody,reqHeader)
+}
+// get work list for user
+export const getworklistAPI = async(reqHeader)=>{
+    return await commonAPI("GET",`${BASE_URL}/getBookingsByUserId`,"",reqHeader)
 }

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { approveUserWorkRequestAPI, getworkerrequestAPI } from '../../Services/allAPI';
+import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, getworkerrequestAPI, workdoneAPI } from '../../Services/allAPI';
 
 function WorkerDash() {
   const [show, setShow] = useState(false);
@@ -18,6 +18,10 @@ function WorkerDash() {
   const [workerid, setWorkerid] = useState('');
   const [existingUser, setExistingUser] = useState({});
   const [workrequests, setWorkRequests] = useState([]);
+  const [accepted,setAccepted]  = useState(null)
+  const [rejected,setRejected] = useState()
+  const [showbtn,setShowbtn] = useState()
+  const [workdone,setworkdone] = useState()
   const navigate = useNavigate();
   const handlelogout = () => {
     sessionStorage.removeItem('Activeuser');
@@ -55,14 +59,17 @@ function WorkerDash() {
 
   const handleapproveUserRequest = async(bookingid)=>{
     const id = bookingid
+  const  reqBody = {}
     if(token){
       const reqHeader = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      };
-      const result = await approveUserWorkRequestAPI(id,"",reqHeader);
+      }
+     
+      const result = await approveUserWorkRequestAPI(id,reqBody,reqHeader);
       if(result.status == 200){
         toast.success(`You Have Accepted the Work`)
+        setAccepted(true)
       }
     }
     else{
@@ -74,14 +81,17 @@ function WorkerDash() {
   // handle decline
   const handledeclineUserRequest = async(bookingid)=>{
     const id = bookingid
+  const  reqBody = {}
     if(token){
       const reqHeader = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      };
-      const result = await approveUserWorkRequestAPI(id,reqHeader);
+      }
+     
+      const result = await declineUserWorkRequestAPI(id,reqBody,reqHeader);
       if(result.status == 200){
-        toast.success(`You Have Accepted the Work`)
+        toast.error(`You Have Declined the Work`)
+        setRejected(true)
       }
     }
     else{
@@ -89,7 +99,37 @@ function WorkerDash() {
     }
    
   }
-  console.log(workrequests);
+ 
+ console.log(workrequests);
+ useEffect(()=>{
+  FetchWorkRequest()
+  if(accepted){
+    setShowbtn(true)
+  }
+  else if(rejected){
+    setShowbtn(false)
+  }
+  else{
+    setShow()
+  }
+ },[handleapproveUserRequest,handledeclineUserRequest])
+
+ const fetchworkdone = async()=>{
+  if(token){
+    const reqHeader = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+    const result = await workdoneAPI(workerid,reqHeader)
+    if(result.status == 200){
+      toast.success(`You Have Completed the Work`)
+      setworkdone(true)
+    }
+  }
+  else{
+
+  }
+ }
   return (
     <>
       <div>
@@ -128,6 +168,7 @@ function WorkerDash() {
                     <th className='date'>Date</th>
                     <th className='location'>Location</th>
                     <th className='service'>Service</th>
+                    <th className='service'>Charge</th>
                     <th className='status'>Status</th>
                     <th className='status'>Action</th>
                   </tr>
@@ -138,7 +179,7 @@ function WorkerDash() {
                       <tr className='table-row' key={request._id}>
                         <td className='srno'>{index + 1}</td>
                         <td className='name'>{request.bookersusername}</td>
-                        <td>{request.date}</td>
+                        <td>{request.date} {request.time}</td>
                         <td className='location'>
                           <p>{request.location}</p>
                           <a href={request.locationURL} target='blank'>
@@ -146,8 +187,11 @@ function WorkerDash() {
                           </a>
                         </td>
                         <td className='status'>{request.service}</td>
+                        <td className='status'>{request.price}</td>
+                        
                         <td className='status'>{request.status ? `Work Accepted` : `Work not Accepted`}</td>
                         <td className='status'>
+                     
                           <button onClick={(e)=>handleapproveUserRequest(request._id)} className='approvebtn'>Approve</button>
                           <button  onClick={(e)=>handledeclineUserRequest(request._id)} className='declinebtn'>Decline</button>
                         </td>
@@ -196,6 +240,22 @@ function WorkerDash() {
           </div>
         </Modal.Body>
       </Modal>
+
+
+
+
+      <ToastContainer
+position="top-right"
+autoClose={2500}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover={false}
+theme="colored"
+/>
     </>
   );
 }

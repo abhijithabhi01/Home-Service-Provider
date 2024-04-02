@@ -24,7 +24,7 @@ const Home = () => {
                     <small>A perfect place to get your Work done</small>
                 </div>
                 <div className="d-flex justify-content-start gap-2">
-{token ?                    <Link to={'/category-view-div'} className="btn-get-started scrollto">Book Appointment</Link>
+{token ?                    <Link to={'/view-service'} className="btn-get-started scrollto">Book Appointment</Link>
 :<Link to={'/login'} className="btn-get-started scrollto">Get Started</Link>
                     }
                 </div>
