@@ -91,7 +91,7 @@ export const deleteworkersAPI = async(workerid,reqBody,reqHeader)=>{
 }
 
 // book worker
-export const addReviewAPI = async(id,reqBody)=>{
-    return await commonAPI("POST",`${BASE_URL}/user/addreview/${id}`,reqBody,"m")
+export const addReviewAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/user/addreview/${id}`,reqBody,reqHeader)
 }
 

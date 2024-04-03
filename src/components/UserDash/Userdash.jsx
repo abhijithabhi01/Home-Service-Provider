@@ -133,10 +133,15 @@ else{
 
 const handlesendreview = async(id)=>{
   const {review} = takereview
+
+if(token){
+  const reqHeader = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
   const reqBody = new FormData()
-  reqBody.append("review",review)
-  reqBody.append("id",id)
-  const result = await addReviewAPI(reqBody)
+  reqBody.append("feedback",review)
+  const result = await addReviewAPI(id,reqBody,reqHeader)
   if(result.status == 200){
     toast.success(`Thanks For Giving Your Review`)
     handleClose3()
@@ -144,6 +149,10 @@ const handlesendreview = async(id)=>{
   else{
     toast.error(`Something Went wrong`)
   }
+}
+else{
+  toast.error(`Something went Wrong `)
+}
 }
 console.log(worklist);
 const handlecancelbooking = async(id)=>{
