@@ -57,8 +57,8 @@ export const approveUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
     return await commonAPI("PUT",`${BASE_URL}/worker/approvetrue/${id}`,reqBody,reqHeader)
 }
 // work donwe by worker
-export const workdoneAPI = async(id,reqHeader)=>{
-    return await commonAPI("PUT",`${BASE_URL}/worker/workdone/${id}`,"",reqHeader)
+export const workdoneAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${BASE_URL}/worker/workdone/${id}`,reqBody,reqHeader)
 }
 
 export const paymentAPI = async(id,reqBody,reqHeader)=>{
@@ -72,3 +72,26 @@ export const declineUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
 export const getworklistAPI = async(reqHeader)=>{
     return await commonAPI("GET",`${BASE_URL}/getBookingsByUserId`,"",reqHeader)
 }
+
+export const AllusersAPI = async()=>{
+    return await commonAPI('GET',`${BASE_URL}/user/get`)
+}
+//admin delete user 
+export const deleteuserAPI = async(userid,reqBody,reqHeader)=>{
+    return await commonAPI('DELETE',`${BASE_URL}/deleteuser/${userid}`,reqBody,reqHeader)
+}
+
+//admin get all users
+export const AllworkersAPI = async()=>{
+    return await commonAPI('GET',`${BASE_URL}/provider/get`)
+}
+//admin delete user 
+export const deleteworkersAPI = async(workerid,reqBody,reqHeader)=>{
+    return await commonAPI('DELETE',`${BASE_URL}/deleteworker/${workerid}`,reqBody,reqHeader)
+}
+
+// book worker
+export const addReviewAPI = async(id,reqBody)=>{
+    return await commonAPI("POST",`${BASE_URL}/user/addreview/${id}`,reqBody,"m")
+}
+

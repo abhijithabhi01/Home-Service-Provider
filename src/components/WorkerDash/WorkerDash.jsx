@@ -8,12 +8,15 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, getworkerrequestAPI, workdoneAPI } from '../../Services/allAPI';
+import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deleteworkersAPI, getworkerrequestAPI, workdoneAPI } from '../../Services/allAPI';
 
 function WorkerDash() {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [show3, setShow3] = useState(false);
+  const handleClose3 = () => setShow3(false);
+  const handleShow3 = () => setShow3(true);
+  const [show4, setShow4] = useState(false);
+  const handleClose4 = () => setShow4(false);
+  const handleShow4 = () => setShow4(true);
   const [token, setToken] = useState('');
   const [workerid, setWorkerid] = useState('');
   const [existingUser, setExistingUser] = useState({});
@@ -101,19 +104,7 @@ function WorkerDash() {
   }
  
  console.log(workrequests);
- useEffect(()=>{
-  FetchWorkRequest()
-  if(accepted){
-    setShowbtn(true)
-  }
-  else if(rejected){
-    setShowbtn(false)
-  }
-  else{
-    setShow()
-  }
- },[handleapproveUserRequest,handledeclineUserRequest])
-
+ 
  const fetchworkdone = async()=>{
   if(token){
     const reqHeader = {
@@ -130,6 +121,25 @@ function WorkerDash() {
 
   }
  }
+
+ // delete  account 
+const handledeleteaccount = async()=>{
+  if(token){
+    const reqHeader = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      const reqBody ={}
+      const result = await deleteworkersAPI(workerid,reqBody,reqHeader)
+      if(result.status == 200){
+        toast.error(`Your Account have been Deleted`)
+        setTimeout(() => {
+          handlelogout()
+          navigate('/')
+        }, 5000);
+      }
+    }
+}
   return (
     <>
       <div>
@@ -143,9 +153,7 @@ function WorkerDash() {
             <h3 className='mt-4 ms-2'>User</h3>
           </div>
           <div className='d-flex'>
-            <h5 onClick={handleShow} className='m-2 text-danger' style={{ cursor: 'pointer' }}>
-              Logout
-            </h5>
+          
             <h5 className='m-2'>
               {' '}
               <a href='/' style={{ textDecoration: 'none', color: 'white', cursor: 'pointer' }}>
@@ -171,6 +179,7 @@ function WorkerDash() {
                     <th className='service'>Charge</th>
                     <th className='status'>Status</th>
                     <th className='status'>Action</th>
+                    <th className='status'>Review</th>
                   </tr>
                 </thead>
                 {workrequests.length > 0 ? (
@@ -195,6 +204,7 @@ function WorkerDash() {
                           <button onClick={(e)=>handleapproveUserRequest(request._id)} className='approvebtn'>Approve</button>
                           <button  onClick={(e)=>handledeclineUserRequest(request._id)} className='declinebtn'>Decline</button>
                         </td>
+                        <td className='status'>{request.review}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -214,16 +224,22 @@ function WorkerDash() {
           <Tab eventKey='profile' title='Profile'>
             <WorkerProfile />
           </Tab>
-          <Tab eventKey='contact' title='Contact'>
+          {/* <Tab eventKey='contact' title='Contact'>
             Tab content for Contact
-          </Tab>
-          <Tab eventKey='settings' title='Settings'>
-            Tab content for settings
-          </Tab>
+          </Tab> */}
+          
+          <Tab eventKey="settings" title="Settings">
+                  <div style={{display:'flex',flexDirection:'column'}}>
+                    <h3 className='text-light'>Logout from this Account</h3>
+                      <button onClick={handleShow3} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Logout</button>
+                      <h3 className='text-light'>Delete the  Account</h3>
+                      <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
+                   </div>
+                    </Tab>
         </Tabs>
       </div>
 
-      <Modal show={show} onHide={handleClose} backdrop='static' keyboard={false} centered>
+      <Modal show={show3} onHide={handleClose3}  keyboard={false} centered>
         <Modal.Header closeButton>
           <Modal.Title>
             <h1>Logout</h1>
@@ -231,7 +247,7 @@ function WorkerDash() {
         </Modal.Header>
         <Modal.Body>
           <div className='editform'>
-            <button className='updatebtn' onClick={handleClose}>
+            <button className='updatebtn' onClick={handleClose3}>
               Cancel
             </button>
             <button className='cancelbtn' onClick={handlelogout}>
@@ -241,6 +257,30 @@ function WorkerDash() {
         </Modal.Body>
       </Modal>
 
+
+      <Modal
+        show={show4}
+        onHide={handleClose4}
+
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title ><h1>Delete ACcount</h1></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='editform'>
+            <h3>All your data Regarding the account will be deleted.This is an irreversible action</h3>
+          <div style={{display:'flex'}}>
+            <button  className='updatebtn' onClick={handleClose4}>Cancel</button>
+            <button className='cancelbtn' onClick={handledeleteaccount}>
+              Delete
+            </button>
+          </div>
+         
+          </div>
+        </Modal.Body>
+      </Modal>
 
 
 

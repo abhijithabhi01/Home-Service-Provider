@@ -104,7 +104,7 @@ const SignUp = () => {
 
             }
             else {
-                toast.error('Registration failed')
+                toast.error(result.response.data)
                 setLoading(false)
                 setUserDetails({
                     name: "",
@@ -115,7 +115,7 @@ const SignUp = () => {
                     userimage: ""
                 })
                 setpreview("")
-                console.log(result);
+                console.log(result.response.data);
             }
 
         }

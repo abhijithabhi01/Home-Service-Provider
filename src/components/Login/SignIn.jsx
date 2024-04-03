@@ -32,46 +32,46 @@ const SignIn = () => {
         setWho(event.target.value);
     };
 
-    // user login
-    const handleuserlogin = async (e)=>{
- 
-        e.preventDefault()
-         const{email,password}= userDetails
-         if(!email || !password){
-             toast.info('please fill the form completely')
-         }
-         else{
-            setLoading(true)
-             //api call
-          const result = await userloginAPI(userDetails)
-          if(result.status == 200){
-            setLoading(false)
-            toast.success('Login success')
-            sessionStorage.setItem("Activeuser",JSON.stringify(result.data))
-            sessionStorage.setItem("token",result.data.token)
-            setTimeout(() => {
-                navigate('/')
-            }, 3000);
-       // console.log(result.data);
-            setUserDetails({
-                email:"",
-                password:""
-            })
-           
-          }
-          else{
-            toast.error('Registration failed')
-            setLoading(false)
-            setUserDetails({
-                email:"",
-                password:""
-            })
-           console.log(result);
-          }
-          
-         }
-       }
-
+ // user login
+ const handleuserlogin = async (e) => {
+    e.preventDefault();
+    const { email, password } = userDetails;
+    if (email == 'admin@gmail.com' && password == 'admin') {
+        sessionStorage.setItem("Activeuser", JSON.stringify({ email: 'admin@gmail.com' }));
+        sessionStorage.setItem("token", "adminToken"); 
+        alert('Welcome, Admin!'); // Display an alert after admin login
+        navigate('/adminpage');
+    } else {
+        if (!email || !password) {
+            toast.info('Please fill the form completely');
+        } else {
+            setLoading(true);
+            // API call
+            const result = await userloginAPI(userDetails);
+            if (result.status === 200) {
+                setLoading(false);
+                toast.success('Login success');
+                sessionStorage.setItem("Activeuser", JSON.stringify(result.data));
+                sessionStorage.setItem("token", result.data.token);
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
+                setUserDetails({
+                    email: "",
+                    password: ""
+                });
+            } else {
+                toast.error('Login failed');
+                setLoading(false);
+                setUserDetails({
+                    email: "",
+                    password: ""
+                });
+                console.log(result);
+            }
+        }
+    }
+};
 
     //    worker login
     const handleworkerlogin = async (e)=>{

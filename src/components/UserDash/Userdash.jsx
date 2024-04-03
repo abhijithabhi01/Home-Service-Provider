@@ -7,7 +7,7 @@ import WorkerProfile from './UserProfile';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
-import { getworklistAPI, paymentAPI } from '../../Services/allAPI';
+import { addReviewAPI, deleteuserAPI, getworklistAPI, paymentAPI, workdoneAPI } from '../../Services/allAPI';
 import Spinner from 'react-bootstrap/Spinner';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,9 +19,21 @@ function UserDash() {
     const handleShow = () => setShow(true);
     const [show2, setShow2] = useState(false);
     const handleClose2 = () => setShow2(false);
+    const [show3, setShow3] = useState(false);
+    const handleClose3 = () => setShow3(false);
+    const handleShow3 = (request) => {
+      setSelectedRequest(request);
+      setShow3(true);
+  };
+    const [show4, setShow4] = useState(false);
+    const handleClose4 = () => setShow4(false);
+    const handleShow4 = () => setShow4(true);
     const [loader,setloader] = useState(false)
     const [ispayment,setispayment] = useState(false)
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [takereview,settakereview] = useState({
+      review:""
+    })
     const [cardDetails, setCardDetails] = useState({
         cardno: '',
         cardname: '',
@@ -32,7 +44,7 @@ function UserDash() {
         setSelectedRequest(request);
         setShow2(true);
     };
-    console.log(cardDetails);
+  //  console.log(cardDetails);
     const [token, setToken] = useState('');
     const [userid, setuserid] = useState('');
     const [existingUser, setExistingUser] = useState({});
@@ -117,7 +129,64 @@ else{
 
 }
 }
+
+
+const handlesendreview = async(id)=>{
+  const {review} = takereview
+  const reqBody = new FormData()
+  reqBody.append("review",review)
+  reqBody.append("id",id)
+  const result = await addReviewAPI(reqBody)
+  if(result.status == 200){
+    toast.success(`Thanks For Giving Your Review`)
+    handleClose3()
+  }
+  else{
+    toast.error(`Something Went wrong`)
+  }
+}
 console.log(worklist);
+const handlecancelbooking = async(id)=>{
+  // console.log(id);
+setloader(true)
+if(token){
+const reqHeader = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
+  const reqBody = {}
+  const result = await workdoneAPI(id,reqBody,reqHeader)
+  if(result.status == 200){
+    fetchworklist()
+    setTimeout(() => {
+      setloader(false)
+      toast.error(`You have Cancelled the Booking`)
+  }, 2000);
+  }
+  else{
+    toast.error(`Something went wrong,try again later`)
+  }
+}
+}
+
+// delete  account 
+const handledeleteaccount = async()=>{
+  if(token){
+    const reqHeader = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      const reqBody ={}
+      const result = await deleteuserAPI(userid,reqBody,reqHeader)
+      if(result.status == 200){
+        toast.error(`Your Account have been Deleted`)
+        setTimeout(() => {
+          handlelogout()
+          navigate('/')
+        }, 5000);
+      }
+    }
+}
     return (
         <>
 
@@ -130,7 +199,7 @@ console.log(worklist);
                         <h3 className='mt-4 ms-2'>User</h3>
                     </div>
                     <div className='d-flex'>
-                        <h5 onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer' }}>Logout</h5>
+                       
                         <h5 className='m-2'> <a href="/" style={{ textDecoration: 'none', color: 'white',cursor:'pointer' }}>Home</a></h5>
                     </div>
 
@@ -159,7 +228,7 @@ console.log(worklist);
                     <th className='service'>Service</th>
                     <th className='status'>Charge</th>
                     <th className='status'>Status</th>
-                    <th className='status'>Action</th>
+                    <th style={{width:'150px'}}>Action</th>
                     
                   </tr>
                 </thead>
@@ -169,7 +238,8 @@ console.log(worklist);
                       <tr className='table-row' key={request._id}>
                         <td className='srno'>{index + 1}</td>
                         <td className='name'>{request.bookingworkername}</td>
-                        <td>{request.date}</td>
+                        <td>{request.date} {request.time}</td>
+
                         <td className='location'>
                           <p>{request.location}</p>
                           <a href={request.locationURL} target='blank'>
@@ -178,10 +248,18 @@ console.log(worklist);
                         </td>
                         <td className='status'>{request.service}</td>
                         <td className='status'>{request.price}</td>
-                        <td className='status'>{request.status  ? `Work Accepted` : `Work not Accepted`}</td>
+                      {request.workstatus ?  <td className='status'>{request.status  ? <p>Work Accepted</p> : <p>Work not Accepted</p>}</td>
+                    :
+                    <td className='status'>You have cancelled the work</td>
+                    }
                         {request.payment ? (
   request.status ? (
-    <td className='status'>Payment Done</td>
+    <td className='status'>
+     <>
+        Payment Done
+        <button className='p-2' onClick={(e)=>handleShow3(request)} style={{border:'3px solid black',backgroundColor:'#367591',color:'white',width:'100%'}}>Review</button>
+     </>
+    </td>
   ) : (
     <p>
       Worker has Declined the Work
@@ -190,9 +268,12 @@ console.log(worklist);
 ) : (
   <td className='status'>
     {request.status ? (
-      <button className='p-2' onClick={(e) => handleShow2(request)} style={{border:'3px solid black',backgroundColor:'blue',color:'white',width:'100%'}}>Pay</button>
+      <button className='p-2' onClick={(e) => handleShow2(request)} style={{border:'3px solid black',backgroundColor:'#4ef037',color:'white',width:'100%'}}>Pay</button>
     ) : (
-      `Work not Accepted`
+     <>
+       <p>Work not Accepted</p>
+        <button className='p-2' onClick={(e) => handlecancelbooking(request._id)} style={{border:'3px solid black',backgroundColor:'red',color:'white',width:'100%'}}>Cancel Booking</button>
+     </>
     )}
   </td>
 )}
@@ -223,11 +304,14 @@ console.log(worklist);
                     <Tab eventKey="profile" title="Profile">
                         <WorkerProfile />
                     </Tab>
-                    <Tab eventKey="contact" title="Book Now">
-                        Tab content for Book appointment
-                    </Tab>
+                   
                     <Tab eventKey="settings" title="Settings">
-                        Tab content for settings
+                  <div style={{display:'flex',flexDirection:'column'}}>
+                    <h3 className='text-light'>Logout from this Account</h3>
+                      <button onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Logout</button>
+                      <h3 className='text-light'>Delete the  Account</h3>
+                      <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
+                   </div>
                     </Tab>
                 </Tabs>
             </div>
@@ -252,11 +336,12 @@ console.log(worklist);
         </Modal.Header>
         <Modal.Body>
           <div className='editform'>
+            <div style={{display:'flex'}}>
           <button  className='updatebtn' onClick={handleClose}>Cancel</button>
           <button className='cancelbtn' onClick={handlelogout}>
             Logout
           </button>
-         
+          </div>
           </div>
         </Modal.Body>
       </Modal>
@@ -401,12 +486,71 @@ console.log(worklist);
 
 
 
+      <Modal
+        show={show3}
+        onHide={handleClose3}
+      
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title ><h1 >Give Review</h1></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+              
+        {selectedRequest && 
+        (
+          <>
+          <h4>Enter Your Experience with our Service</h4>
+        <div className="input-field m-3">
+                                
+                                <input type="text" 
+                              
+                               onChange={(e)=>settakereview({...takereview,review:e.target.value})}
+                               value={takereview.review}
+                                placeholder="Enter Your review" 
+                                style={{width:'400px'}}
+                                />
+                            </div>
+                            <div style={{ width: '100%', background: 'rgb(255, 250, 235)', boxShadow: '0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1)'}}>
+                              <div style={{ display:'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 10px 10px 20px', }}>
+                              
+                                <button  style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', height: '36px', background: 'green', boxShadow: '0px 0.5px 0.5px rgba(16, 86, 82, .75), 0px 1px 0.5px rgba(16, 86, 82, .75)', borderRadius: '7px', border: '1px solid rgb(16, 86, 82)', color: 'white', fontSize: '18px', fontWeight: '600', transition: 'all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1)' }} onClick={(e)=>handlesendreview(selectedRequest._id)}>Post Review</button>
+                              </div>
+                            </div>
+      </>
+        )
+        }
+     
+        </Modal.Body>
+      </Modal>
 
 
+      <Modal
+        show={show4}
+        onHide={handleClose4}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title ><h1>Delete ACcount</h1></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='editform'>
+            <h3>All your data Regarding the account will be deleted.This is an irreversible action</h3>
+          <div style={{display:'flex'}}>
+            <button  className='updatebtn' onClick={handleClose}>Cancel</button>
+            <button className='cancelbtn' onClick={handledeleteaccount}>
+              Delete Account
+            </button>
+          </div>
+         
+          </div>
+        </Modal.Body>
+      </Modal>
 
 
-
- 
 
 <ToastContainer
 position="top-right"

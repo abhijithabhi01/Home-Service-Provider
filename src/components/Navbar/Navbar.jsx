@@ -43,7 +43,7 @@ function Navbar() {
                     <a className="nav-link" href="/user-dashboard"><i className="fas fa-tachometer-alt"></i>Dashboard</a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="javascript:void(0);"><i className="far fa-address-book"></i> Book Now</a>
+                    <a className="nav-link" href="view-service"><i className="far fa-address-book"></i> Book Now</a>
                   </li>
                   <li className="nav-item">
                     <a className="nav-link" href="view-service"><i className="far fa-clone"></i>Categories</a>
