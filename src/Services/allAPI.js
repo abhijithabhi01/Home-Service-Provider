@@ -56,9 +56,9 @@ export const getworkerrequestAPI = async(workerid,reqHeader)=>{
 export const approveUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
     return await commonAPI("PUT",`${BASE_URL}/worker/approvetrue/${id}`,reqBody,reqHeader)
 }
-// work donwe by worker
-export const workdoneAPI = async(id,reqBody,reqHeader)=>{
-    return await commonAPI("PUT",`${BASE_URL}/worker/workdone/${id}`,reqBody,reqHeader)
+
+export const CancelWorkAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("DELETE",`${BASE_URL}/delete/booking/${id}`,reqBody,reqHeader)
 }
 
 export const paymentAPI = async(id,reqBody,reqHeader)=>{
@@ -66,7 +66,7 @@ export const paymentAPI = async(id,reqBody,reqHeader)=>{
 }
 // approve request for worker
 export const declineUserWorkRequestAPI = async(id,reqBody,reqHeader)=>{
-    return await commonAPI("PUT",`${BASE_URL}/worker/approvefalse/${id}`,reqBody,reqHeader)
+    return await commonAPI("POST",`${BASE_URL}/worker/approvefalse/${id}`,reqBody,reqHeader)
 }
 // get work list for user
 export const getworklistAPI = async(reqHeader)=>{
@@ -94,4 +94,23 @@ export const deleteworkersAPI = async(workerid,reqBody,reqHeader)=>{
 export const addReviewAPI = async(id,reqBody,reqHeader)=>{
     return await commonAPI("POST",`${BASE_URL}/user/addreview/${id}`,reqBody,reqHeader)
 }
-
+// Add package 
+export const AddPackageAPI = async(wid,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/addpackage/${wid}`,reqBody,reqHeader)
+}
+//admin get all Packages
+export const getAllPackagesAPI = async()=>{
+    return await commonAPI('GET',`${BASE_URL}/getallpackages`)
+}
+// book worker
+export const BookPackageAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/packagebooking/${id}`,reqBody,reqHeader)
+}
+// start work api
+export const startWorkAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/work/start/${id}`,reqBody,reqHeader)
+}
+// work done by worker
+export const workdoneAPI = async(id,reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${BASE_URL}/worker/workdone/${id}`,reqBody,reqHeader)
+}

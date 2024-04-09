@@ -275,6 +275,7 @@ const SignUp = () => {
                             <option value="Carpenter">Carpenter</option>
                             <option value="Gardener">Gardener</option>
                             <option value="Laundry">Laundry</option>
+                            <option value="Additional Services">Additional Services</option>
                             {/* <option value="Malappuram">Malappuram</option>
                             <option value="Palakkad	">Palakkad	</option>
                             <option value="Pathanamthitta">Pathanamthitta</option>

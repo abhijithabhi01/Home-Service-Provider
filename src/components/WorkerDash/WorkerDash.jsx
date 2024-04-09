@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deleteworkersAPI, getworkerrequestAPI, workdoneAPI } from '../../Services/allAPI';
+import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deleteworkersAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
+import AddPackage from '../AddPackage/AddPackage';
 
 function WorkerDash() {
   const [show3, setShow3] = useState(false);
@@ -43,9 +44,9 @@ function WorkerDash() {
     }
   }, []);
 
-  useEffect(() => {
-    FetchWorkRequest();
-  }, [existingUser,workerid]); // Empty dependency array, so it runs only once when the component mounts
+  // useEffect(() => {
+  //   FetchWorkRequest();
+  // }, [existingUser,workerid]); // Empty dependency array, so it runs only once when the component mounts
 
   const FetchWorkRequest = async () => {
     if (token) {
@@ -60,6 +61,7 @@ function WorkerDash() {
     }
   };
 
+  // handle approve work
   const handleapproveUserRequest = async(bookingid)=>{
     const id = bookingid
   const  reqBody = {}
@@ -80,7 +82,26 @@ function WorkerDash() {
     }
    
   }
-
+// start work
+const handlestartwork = async(bookingid)=>{
+  const id = bookingid
+const  reqBody = {}
+  if(token){
+    const reqHeader = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+   
+    const result = await startWorkAPI(id,reqBody,reqHeader);
+    if(result.status == 200){
+      toast.success(`You Have Started the Work`)
+    }
+  }
+  else{
+    console.log(`Session timed out,Please Login`);
+  }
+ 
+}
   // handle decline
   const handledeclineUserRequest = async(bookingid)=>{
     const id = bookingid
@@ -104,23 +125,25 @@ function WorkerDash() {
   }
  
  console.log(workrequests);
- 
- const fetchworkdone = async()=>{
+ const handlecompletework = async(bookingid)=>{
+  const id = bookingid
+const  reqBody = {}
   if(token){
     const reqHeader = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     }
-    const result = await workdoneAPI(workerid,reqHeader)
+   
+    const result = await workdoneAPI(id,reqBody,reqHeader);
     if(result.status == 200){
       toast.success(`You Have Completed the Work`)
-      setworkdone(true)
     }
   }
   else{
-
+    console.log(`Session timed out,Please Login`);
   }
- }
+ 
+}
 
  // delete  account 
 const handledeleteaccount = async()=>{
@@ -140,6 +163,10 @@ const handledeleteaccount = async()=>{
       }
     }
 }
+
+useEffect(()=>{
+  FetchWorkRequest();
+},[handleapproveUserRequest,handledeclineUserRequest])
   return (
     <>
       <div>
@@ -150,7 +177,7 @@ const handledeleteaccount = async()=>{
               alt=''
               style={{ height: '80px', width: '80px', border: '2px solid black', borderRadius: '50%' }}
             />
-            <h3 className='mt-4 ms-2'>User</h3>
+            <h3 className='mt-4 ms-2'>{existingUser.name}</h3>
           </div>
           <div className='d-flex'>
           
@@ -172,10 +199,10 @@ const handledeleteaccount = async()=>{
                 <thead className='tablehead'>
                   <tr className='table-row'>
                     <th className='srno'>SR NO</th>
-                    <th className='name'>Employer Name</th>
-                    <th className='date'>Date</th>
+                    <th className='name' >Employer Name</th>
+                    <th className='date'>Date & Time</th>
                     <th className='location'>Location</th>
-                    <th className='service'>Service</th>
+                    <th  style={{width:'500px'}}>Service</th>
                     <th className='service'>Charge</th>
                     <th className='status'>Status</th>
                     <th className='status'>Action</th>
@@ -195,16 +222,51 @@ const handledeleteaccount = async()=>{
                             {request.locationURL}
                           </a>
                         </td>
-                        <td className='status'>{request.service}</td>
+                        <td className='status'>
+                       <p> {request.package} </p>
+                        <p>  {request.service} </p>
+                        
+                       
+                        
+                        </td>
                         <td className='status'>{request.price}</td>
                         
-                        <td className='status'>{request.status ? `Work Accepted` : `Work not Accepted`}</td>
-                        <td className='status'>
-                     
-                          <button onClick={(e)=>handleapproveUserRequest(request._id)} className='approvebtn'>Approve</button>
+                        <td className='status'>{request.workstatus}</td>
+                       {request.workstatus === 'work completed' ?
+                       <td>You Have Completed the work
+
+<div className="loader2 mb-2"></div>
+                       </td>
+                       
+                       :
+                       <td className='status'>
+                         {request.status && request.workstatus == 'work Started'  ?
+                      <>
+                      
+
+                           <p>Have You Completed the  Work</p>
+                                                     
+<div className="loader00">
+  <div className="loading00"></div>
+</div>
+                           <button onClick={(e)=>handlecompletework(request._id)} className='approvebtn bg-primary'>Yes</button>
+
+                      </>
+                         :
+                         <>
+                           <button onClick={(e)=>handleapproveUserRequest(request._id)} className='approvebtn'>Approve</button>
                           <button  onClick={(e)=>handledeclineUserRequest(request._id)} className='declinebtn'>Decline</button>
-                        </td>
-                        <td className='status'>{request.review}</td>
+                      {request.status &&  
+                     <>
+                         <p>Have You Started Work</p>
+                           <button onClick={(e)=>handlestartwork(request._id)} className='approvebtn bg-primary'>Yes</button>
+                     </>
+                         
+                         }
+                    </>
+                         }
+                        </td>}
+                        <td className='review'>{request.review?request.review:'no review yet'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -228,6 +290,9 @@ const handledeleteaccount = async()=>{
             Tab content for Contact
           </Tab> */}
           
+          <Tab eventKey='Package' title='Add Package'>
+          <AddPackage/>
+          </Tab>
           <Tab eventKey="settings" title="Settings">
                   <div style={{display:'flex',flexDirection:'column'}}>
                     <h3 className='text-light'>Logout from this Account</h3>
@@ -236,6 +301,8 @@ const handledeleteaccount = async()=>{
                       <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
                    </div>
                     </Tab>
+                    
+          
         </Tabs>
       </div>
 

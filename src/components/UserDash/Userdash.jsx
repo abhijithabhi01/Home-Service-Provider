@@ -7,7 +7,7 @@ import WorkerProfile from './UserProfile';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
-import { addReviewAPI, deleteuserAPI, getworklistAPI, paymentAPI, workdoneAPI } from '../../Services/allAPI';
+import { CancelWorkAPI, addReviewAPI, deleteuserAPI, getworklistAPI, paymentAPI } from '../../Services/allAPI';
 import Spinner from 'react-bootstrap/Spinner';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -107,10 +107,12 @@ else{
         }
         const reqBody = {}
         const result = await paymentAPI(id,reqBody,reqHeader)
-        setispayment(true)
+       
         if(result.status == 200){
-          fetchworklist()
+         
           setTimeout(() => {
+            setispayment(true)
+            fetchworklist()
             setloader(false)
             toast.success(`Payment Success`)
             handleClose2()
@@ -164,17 +166,20 @@ const reqHeader = {
     'Authorization': `Bearer ${token}`
   }
   const reqBody = {}
-  const result = await workdoneAPI(id,reqBody,reqHeader)
-  if(result.status == 200){
-    fetchworklist()
-    setTimeout(() => {
+  const result = await CancelWorkAPI(id,reqBody,reqHeader)
+  setTimeout(() => {
+    if(result.status == 200){
+      fetchworklist()
+  
+        setloader(false)
+        toast.error(`You have Deleted the Booking`)
+   
+    }
+    else{
       setloader(false)
-      toast.error(`You have Cancelled the Booking`)
+      toast.error(`Something went wrong,try again later`)
+    } 
   }, 2000);
-  }
-  else{
-    toast.error(`Something went wrong,try again later`)
-  }
 }
 }
 
@@ -196,6 +201,8 @@ const handledeleteaccount = async()=>{
       }
     }
 }
+
+
     return (
         <>
 
@@ -205,7 +212,7 @@ const handledeleteaccount = async()=>{
                         <img src={img} alt=""
                             style={{ height: '80px', width: '80px', border: '2px solid black', borderRadius: '50%' }}
                         />
-                        <h3 className='mt-4 ms-2'>User</h3>
+                        <h3 className='mt-4 ms-2'>{existingUser.name}</h3>
                     </div>
                     <div className='d-flex'>
                        
@@ -231,9 +238,9 @@ const handledeleteaccount = async()=>{
                 <thead className='tablehead'>
                   <tr className='table-row'>
                     <th className='srno'>SR NO</th>
-                    <th className='name'>Worker Name</th>
+                    <th className='name' style={{width:'150px'}}>Worker Name</th>
                     <th className='date'>Date</th>
-                    <th className='location'>Location</th>
+                    <th className='location' style={{maxWidth:'20px'}}>Location</th>
                     <th className='service'>Service</th>
                     <th className='status'>Charge</th>
                     <th className='status'>Status</th>
@@ -255,18 +262,46 @@ const handledeleteaccount = async()=>{
                             {request.locationURL}
                           </a>
                         </td>
-                        <td className='status'>{request.service}</td>
+                        <td className='status'>
+                          
+                         <p> {request.package}</p>
+                         <p> {request.service}</p>
+                          </td>
                         <td className='status'>{request.price}</td>
-                      {request.workstatus ?  <td className='status'>{request.status  ? <p>Work Accepted</p> : <p>Work not Accepted</p>}</td>
-                    :
-                    <td className='status'>You have cancelled the work</td>
-                    }
+                      
+                    <td className='status'>
+                      
+                     
+                      {request.workstatus}
+                    
+{request.workstatus == 'work Started' &&
+
+
+
+<div className="loader00">
+  <div className="loading00"></div>
+</div>
+
+
+
+  
+  }
+  {request.workstatus == 'work completed' &&
+
+
+<div className="loader2"></div>
+
+
+}
+                    </td>
+                    
                         {request.payment ? (
   request.status ? (
     <td className='status'>
      <>
         Payment Done
-        <button className='p-2' onClick={(e)=>handleShow3(request)} style={{border:'3px solid black',backgroundColor:'#367591',color:'white',width:'100%'}}>Review</button>
+        {/* <button className='p-2' onClick={(e) => handlecancelbooking(request._id)} style={{border:'3px solid black',backgroundColor:'red',color:'white',width:'100%'}}>Delete Booking</button> */}
+        <button className='review p-2' onClick={(e)=>handleShow3(request)} style={{border:'3px solid black',backgroundColor:'#367591',color:'white',width:'100%'}}>Review</button>
      </>
     </td>
   ) : (
@@ -277,11 +312,17 @@ const handledeleteaccount = async()=>{
 ) : (
   <td className='status'>
     {request.status ? (
+      <>
+      <p>Work Accepted</p>
+      
       <button className='p-2' onClick={(e) => handleShow2(request)} style={{border:'3px solid black',backgroundColor:'#4ef037',color:'white',width:'100%'}}>Pay</button>
+      {/* <button className='p-2 mt-1' onClick={(e) => handlecancelbooking(request._id)} style={{border:'3px solid black',backgroundColor:'red',color:'white',width:'100%'}}>Delete Booking</button> */}
+      </>
+      
     ) : (
      <>
        <p>Work not Accepted</p>
-        <button className='p-2' onClick={(e) => handlecancelbooking(request._id)} style={{border:'3px solid black',backgroundColor:'red',color:'white',width:'100%'}}>Cancel Booking</button>
+        <button className='p-2' onClick={(e) => handlecancelbooking(request._id)} style={{border:'3px solid black',backgroundColor:'red',color:'white',width:'100%'}}>Delete Booking</button>
      </>
     )}
   </td>
@@ -358,7 +399,7 @@ const handledeleteaccount = async()=>{
 
 
 
-
+{/* payment modal */}
 
       <Modal
                 show={show2}
@@ -382,7 +423,7 @@ const handledeleteaccount = async()=>{
                            
                           {selectedRequest && (
                            <>
-                                <h5 style={{color:"black"}}>Worker Name: {selectedRequest._id}</h5>
+                                <h5 style={{color:"black"}}>Worker Name: {selectedRequest.bookingworkername}</h5>
                                 <div className='d-flex'>
                                   <h5 style={{color:"black"}}>Booking:</h5>
                                   <div className='ms-2'>
@@ -392,6 +433,7 @@ const handledeleteaccount = async()=>{
                                 </div>
                                 <h5 style={{color:"black"}}>Service: {selectedRequest.service}</h5>
                                 <h5 style={{color:"black"}}>Location: {selectedRequest.location}</h5>
+                                <h5 style={{color:"black"}}>Price: {selectedRequest.price}</h5>
                                 
                            </>
                           )  }
@@ -573,7 +615,21 @@ draggable
 pauseOnHover={false}
 theme="colored"
 />
+{loader && <div style={{margin:'-35% 0px 0px 45%',position:'fixed'}}>
+  
+  <div className="dot-spinner" style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+  <div className="dot-spinner__dot"></div>
+</div>
 
+</div>
+}   
         </>
     )
 }

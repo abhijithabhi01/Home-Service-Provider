@@ -1,9 +1,17 @@
+.excarddiv{
+   display: flex;
+   flex-wrap: wrap;
+}
+
+
 .card {
     width: 100%;
     height: 254px;
     border-radius: 20px;
     transition: all .3s;
     background: none;
+    flex-grow: 1;
+    flex-basis: 200;
    }
    
    .card2 {

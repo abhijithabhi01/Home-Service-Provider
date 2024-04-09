@@ -93,7 +93,7 @@ const SignIn = () => {
             sessionStorage.setItem("token",result.data.token)
             sessionStorage.setItem("logger",result.data.logger)
             setTimeout(() => {
-                navigate('/')
+                navigate('/worker-dashboard')
             }, 3000);
        // console.log(result.data);
             setUserDetails({
@@ -103,7 +103,7 @@ const SignIn = () => {
            
           }
           else{
-            toast.error('Registration failed')
+            toast.error('Login failed, please try again ')
             setLoading(false)
             setUserDetails({
                 email:"",

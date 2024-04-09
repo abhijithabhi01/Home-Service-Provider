@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import { getAllCategoryAPI, getWorkerbytypeAPI, getallworkersAPI } from '../../Services/allAPI';
+import { getAllCategoryAPI, getAllPackagesAPI, getWorkerbytypeAPI, getallworkersAPI } from '../../Services/allAPI';
 import { BASE_URL } from '../../Services/BASE_URL';
 import './style.css';
 
@@ -12,6 +12,7 @@ function CategorywiseView() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
+    const [allpacks, setAllpacks] = useState([]);
     const [existingUser,setExistingUser] = useState([])
     const [token, setToken] = useState('');
     const [categoryWorkers, setCategoryWorkers] = useState([]);
@@ -42,7 +43,16 @@ function CategorywiseView() {
                 console.error("Error fetching users:", error);
             }
         };
+        const FetchAllPackages = async () => {
+            try {
+                const result = await getAllPackagesAPI();
+                setAllpacks(result.data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
         fetchAllUsers();
+        FetchAllPackages();
     }, []);
 
     useEffect(() => {
@@ -89,8 +99,15 @@ const handlebookuser = (wid) => {
       console.error('Property details are not available.');
     }
   };
+  const handlebookpackage = (wid) => {
+    if (allpacks) {
+      navigate(`/packbooking/${wid}`, { state: { allpacks } });
+    } else {
+      console.error('Property details are not available.');
+    }
+  };
   
-// console.log(categoryWorkers);
+console.log(currentCategory);
     return (
         <>
             <div>
@@ -115,7 +132,36 @@ const handlebookuser = (wid) => {
                             <p>{currentCategory.description}</p>
                         </div>
                     </div>
-                    <div className='worklistdiv'>
+                 
+                 {currentCategory._id === '66091cbec69b4d252042df82' ?  
+                 <>
+                     <h3 className='text-light ms-5'>Exicting Packages</h3>  
+                       <div className='worklistdiv excarddiv d-flex' >
+                     
+                       {allpacks.map((allpacks, index) => (
+                        <div className="card" key={index} style={{ flexGrow: 1, flexBasis: '200px', maxWidth: '210px', height: '340px', margin: '10px 20px 10px 20px', position: 'relative', borderRadius: 'px', backgroundColor: '#103253', boxShadow: 'rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px' }}>
+                            <img src={`${BASE_URL}/uploads/${allpacks.workimage}`} className="card-img-top" alt="Service" style={{ height: "200px", width: "100%" }} />
+                            <div className="card-body">
+                                <h5 className="card-title" style={{ color: 'white' }}>{allpacks.package}</h5>
+                                <h6 className="card-title" style={{ color: 'white' }}>${allpacks.price}</h6>
+                                <p className="card-text" style={{ color: 'white', overflow: 'hidden' }}>{allpacks.service}</p>
+                                <div className="viewbtbdiv">
+                                {token ? 
+                                        <button onClick={(e)=>handlebookpackage(allpacks._id)} className="btn btn-danger viewbtn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', backgroundColor: 'rgb(247, 236, 255)', color: 'black' }}>Book Now</button>
+                                :
+                                             <Link to={'/login'}>   <button  style={{ background: 'blue', border: 'none', padding: '0px 10px', color: "white", fontWeight: 'bold', borderRadius: '5px' }}>
+                                             Book
+                                         </button></Link>
+                                                }
+                            
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                   </div>
+                 </>
+                 :
+                 <div className='worklistdiv'>
     <table className='listtable' style={{height:'fit-content'}}>
       <thead className='tablehead'>
         <tr className='table-row'>
@@ -147,7 +193,10 @@ const handlebookuser = (wid) => {
                             </tbody>
     </table>
     </div>
-                </div>
+
+
+  
+    }    </div>
             </div>
         </>
     );

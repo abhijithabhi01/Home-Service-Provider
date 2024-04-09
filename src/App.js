@@ -11,6 +11,7 @@ import Booking from './components/Booking/Booking';
 import Userlizt from './components/admin/Userlizt';
 import Workerlizt from './components/admin/Workerlizt';
 import Admin from './components/admin/Admin';
+import Pbooking from './components/Packagebooking/Pbooking';
 function App() {
   return (
     <div className="App">
@@ -24,6 +25,7 @@ function App() {
           <Route path='/user-dashboard' element={<UserDash/>} />
           <Route path='/category-view-div/:catid' element={<CategorywiseView/>} />
           <Route path='/booking/:wid' element={<Booking />} />
+          <Route path='/packbooking/:wid' element={<Pbooking/>} />
           <Route path='/userlist' element={<Userlizt/>} />
           <Route path='/workerlist' element={<Workerlizt/>} />
           <Route path='/adminpage' element={<Admin/>} />

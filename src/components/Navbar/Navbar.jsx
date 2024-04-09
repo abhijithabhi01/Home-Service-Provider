@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './navbar.css'
 import logo from '../../images/Worker-logo-design-template-vector-removebg-preview.png'
 import { getallUsers, getallUsersAPI } from '../../Services/allAPI';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [token, setToken] = useState('');
@@ -30,8 +31,10 @@ function Navbar() {
         <nav className="navbar navbar-expand-custom navbar-mainbg">
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <div className='m-3 text-light d-flex '>
-              <img src={logo} alt="logo" style={{height:'50px',width:'50px',borderRadius:"10px"}}/>
-              <h3 className='mt-2 ms-2'>Home Service</h3>
+            <Link to={'/'} className='d-flex' style={{textDecoration:'none',color:'white'}}>
+                <img src={logo} alt="logo" style={{height:'50px',width:'50px',borderRadius:"10px"}}/>
+                <h3 className='mt-2 ms-2'>Home Service</h3>
+            </Link>
             </div>
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
@@ -45,9 +48,9 @@ function Navbar() {
                   <li className="nav-item">
                     <a className="nav-link" href="view-service"><i className="far fa-address-book"></i> Book Now</a>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a className="nav-link" href="view-service"><i className="far fa-clone"></i>Categories</a>
-                  </li>
+                  </li> */}
                 </>
               ) : (
                 <li className="nav-item">

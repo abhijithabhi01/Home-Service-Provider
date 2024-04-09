@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AllworkersAPI, admindeleteworkersAPI, deleteworkersAPI } from '../../Services/allAPI';
 import { BASE_URL } from '../../Services/BASE_URL';
+import { Link } from 'react-router-dom';
 
 function Workerlizt() {
     const [users, setUsers] = useState([]);
@@ -39,13 +40,13 @@ function Workerlizt() {
 
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 mb-5">
     <div className="mt-5 text-center">
         <h2 className="fw-bolder">
              <span className="text-white"> WORKERS    LIST</span>
         </h2>
     </div>
-
+    <Link to="/adminpage" className="btn btn-primary mb-3">Back to Admin</Link> {/* Back button */}
     <div className="row mt-5">
         <div className="col-md-12">
             <table className="table align-middle mb-0 bg-white">
