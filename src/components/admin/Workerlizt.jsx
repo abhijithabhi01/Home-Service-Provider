@@ -54,6 +54,7 @@ function Workerlizt() {
                     <tr>
                         <th> WORKER ID</th>
                         <th>IMAGE</th> 
+                        <th>NAME</th>
                         <th>E-MAIL</th>
                         <th>ACTION</th>
                     </tr>

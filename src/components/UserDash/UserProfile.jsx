@@ -117,10 +117,18 @@ function UserProfile() {
             <h1 className='text-light'>{currentUser ? currentUser.name : "Username unavaliable"}</h1>
           </div>
           <div className='box-2 text-light'>
-            <h3>{currentUser ? currentUser.email : "email unavaliable"}</h3>
+           <div className='d-flex'>
+            <h3 className='text-dark'>Email:</h3>
+             <h3>{currentUser ? currentUser.email : "email unavaliable"}</h3>
+             </div>
+             <div className='d-flex'>
+            <h3 className='text-dark'>Address:</h3>
             <h3>{currentUser ? currentUser.address : "Address unavaliable"}</h3>
+            </div>
+            <div className='d-flex'>
+            <h3 className='text-dark'>Mob No:</h3>
             <h3>{currentUser ? currentUser.contactnumber : "contact no unavaliable"}</h3>
-
+</div>
             {/* <h3>{currentUser?currentUser.address:"Address unavaliable"}</h3>
            <h3>{currentUser?currentUser.address:"Address unavaliable"}</h3>
            <h3>{currentUser?currentUser.address:"Address unavaliable"}</h3> */}

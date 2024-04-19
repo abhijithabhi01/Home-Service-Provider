@@ -20,7 +20,7 @@ const Home = () => {
             <div className="container">
                 <div>
                     <small>TOTAL HOME WORK SOLUTION</small>
-                    <h1>Your Most Trusted <br />Work Partner</h1>
+                    <h1 style={{color:'black'}}>Your Most Trusted <br />Work Partner</h1>
                     <small>A perfect place to get your Work done</small>
                 </div>
                 <div className="d-flex justify-content-start gap-2">

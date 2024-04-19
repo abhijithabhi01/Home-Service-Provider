@@ -142,12 +142,34 @@ const HandleWorktypeChange = (event) => {
             <h1 className='text-light'>{currentUser.name ? currentUser.name : "Username unavaliable"}</h1>
           </div>
           <div className='box-2 text-light'>
-            <h3>{currentUser.email ? currentUser.email : "email unavaliable"}</h3>
+          <div className='d-flex'>
+            <h3 className='text-dark'>Email:</h3>
+             <h3>{currentUser ? currentUser.email : "email unavaliable"}</h3>
+             </div>
+             <div className='d-flex'>
+            <h3 className='text-dark'>Address:</h3>
             <h3>{currentUser.address ? currentUser.address : "Address unavaliable"}</h3>
-            <h3>{currentUser.contactnumber ? currentUser.contactnumber : "contact no unavaliable"}</h3>
-            <h3>{currentUser.organisation ? currentUser.organisation : "Organisation no unavaliable"}</h3>  <h3>{currentUser.worktype ? currentUser.worktype : "Worktype no unavaliable"}</h3>  
-            <h3>{currentUser.description ? currentUser.description : "contact no unavaliable"}</h3> 
-            <h3>{currentUser.district ? currentUser.district  : "contact no unavaliable"}</h3> 
+            </div>
+          
+            <div className='d-flex'>
+            <h3 className='text-dark'>Mob No:</h3>
+            <h3>{currentUser ? currentUser.contactnumber : "contact no unavaliable"}</h3>
+</div>
+
+<div className='d-flex'>
+            <h3 className='text-dark'>Organisation:</h3>
+            <h3>{currentUser.organisation ? currentUser.organisation : "Organisation no unavaliable"}</h3> 
+</div>
+<div className='d-flex'>
+            <h3 className='text-dark'>Service:</h3>
+            <h3>{currentUser.worktype ? currentUser.worktype : "Worktype no unavaliable"}</h3>  
+</div>
+<div className='d-flex'>
+            <h3 className='text-dark'>Description:</h3>
+            <h3>{currentUser.description ? currentUser.description : "contact no unavaliable"}</h3>  
+</div>    
+          
+          
             
          
          

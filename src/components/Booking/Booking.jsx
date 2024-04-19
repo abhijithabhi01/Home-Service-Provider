@@ -3,7 +3,7 @@
   import Navbar from '../Navbar/Navbar'
   import { BASE_URL } from '../../Services/BASE_URL'
   import { FaAddressCard, FaBriefcase, FaCheck, FaDollarSign, FaEnvelope, FaFlag, FaLocationArrow, FaLock, FaMobile, FaNotesMedical, FaPhone, FaRegObjectUngroup, FaStickyNote, FaTimes, FaUser } from 'react-icons/fa';
-  import { useLocation, useParams } from 'react-router-dom';
+  import { useLocation, useNavigate, useParams } from 'react-router-dom';
   import 'react-toastify/dist/ReactToastify.css';
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
@@ -33,7 +33,7 @@
           locationURL:"",
           price:""
       })
-    
+    const navigate = useNavigate()
       const handleDateChange = (e) => {
           const selectedDate = e.target.value;
           setDate(selectedDate);
@@ -114,7 +114,12 @@
                   location:"", 
                   locationURL:""
                 })
+
+                setTimeout(() => {
+                  navigate('/')
+                }, 2000);
               }
+              
               else if(result.status == 250){
                 toast.error(`Worker Already have a Booking `)
                 setTimeout(() => {
@@ -160,15 +165,31 @@
       <div className='profile-box book-box d-flex align-items-center justify-content-between' >
         
         <p>
-              <div className='box-1 bookbox-2'>
+              <div className='box-1 bookbox-2' style={{background:'#113946',border:'2px solid white'}}>
                 <div className='box-2 text-light' style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                 <img src={currentWorker ? `${BASE_URL}/uploads/${currentWorker.userimage}` : 'https://t3.ftcdn.net/jpg/05/53/79/60/360_F_553796090_XHrE6R9jwmBJUMo9HKl41hyHJ5gqt9oz.jpg'} alt="Image unavliable"
                     style={{ height: '150px', width: '150px', border: '2px solid black', borderRadius: '50%' }}
                   />
-                  <h2>{currentWorker.name ? currentWorker.name : "Username unavaliable"}</h2>
-                  <h6>{currentWorker.contactnumber ? currentWorker.contactnumber : "contact no unavaliable"}</h6>
-                  <h6>{currentWorker.organisation ? currentWorker.organisation : "Organisation no unavaliable"}</h6>  <h6>{currentWorker.worktype ? currentWorker.worktype : "Worktype no unavaliable"}</h6>  
+               <div className='d-flex'>
+                <h2>Name :</h2>
+                   <h2>{currentWorker.name ? currentWorker.name : "Username unavaliable"}</h2></div>
+
+                   <div className='d-flex'>
+                <h6 style={{marginRight:'10px'}}>Contact No :</h6>
+                  <h6>{currentWorker.contactnumber ? currentWorker.contactnumber : "contact no unavaliable"}</h6> </div>
+                  <div className='d-flex'>
+                <h6 style={{marginRight:'10px'}}>Organisation :</h6>
+                  <h6>{currentWorker.organisation ? currentWorker.organisation : "Organisation no unavaliable"}</h6> 
+                  </div>
+                  <div className='d-flex'>
+                <h6 style={{marginRight:'10px'}}>Service:</h6>
+                <h6>{currentWorker.worktype ? currentWorker.worktype : "Worktype no unavaliable"}</h6>  
+                </div>
+                
+                <div className='d-flex'>
+                <h6 style={{marginRight:'10px'}}>Description :</h6>
                   <h6>{currentWorker.description ? currentWorker.description : "description no unavaliable"}</h6> 
+                  </div>
                   {/* <h6>{currentWorker.district ? currentWorker     .district  : "contact no unavaliable"}</h6>  */}
                   
               

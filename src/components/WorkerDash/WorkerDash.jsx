@@ -183,9 +183,9 @@ useEffect(()=>{
           
             <h5 className='m-2'>
               {' '}
-              <a href='/' style={{ textDecoration: 'none', color: 'white', cursor: 'pointer' }}>
+              {/* <a href='/' style={{ textDecoration: 'none', color: 'white', cursor: 'pointer' }}>
                 Home
-              </a>
+              </a> */}
             </h5>
           </div>
         </div>
@@ -294,11 +294,13 @@ useEffect(()=>{
           <AddPackage/>
           </Tab>
           <Tab eventKey="settings" title="Settings">
-                  <div style={{display:'flex',flexDirection:'column'}}>
+          <div style={{display:'flex',height:'70vh',alignContent:'center',justifyContent:'center',textAlign:'center'}}>
+                    <div style={{display:'flex',flexDirection:'column', width:'500px',alignContent:'center',justifyContent:'center'}}>
                     <h3 className='text-light'>Logout from this Account</h3>
                       <button onClick={handleShow3} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Logout</button>
                       <h3 className='text-light'>Delete the  Account</h3>
                       <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
+                   </div>
                    </div>
                     </Tab>
                     

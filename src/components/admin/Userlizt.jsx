@@ -50,6 +50,7 @@ function Userlizt() {
                                 <th> USER ID</th>
                                 <th>IMAGE</th> {/* New column for user image */}
                                 <th>NAME</th>
+                                
                                 <th>E-MAIL</th>
                                 <th>ACTION</th>
                             </tr>

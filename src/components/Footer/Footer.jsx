@@ -26,10 +26,10 @@ const Footer = () => {
 							<div className="footer-widget footer-menu">
 								<h2 className="footer-title">For User</h2>
 								<ul>
-									<li><Link to={'/'}><FaAngleDoubleRight className='icon' />  Search for Service</Link></li>
+									<li><Link to={'/view-service'}><FaAngleDoubleRight className='icon' />  Search for Service</Link></li>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Login</Link></li>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Register</Link></li>
-									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Booking</Link></li>
+									<li><Link to={'/view-service'}><FaAngleDoubleRight className='icon' />  Booking</Link></li>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />User Dashboard</Link></li>
 								</ul>
 							</div>
@@ -42,7 +42,7 @@ const Footer = () => {
 								<ul>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' /> Appointments</Link></li>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' /> Login</Link></li>
-									<li><Link to={'/register'}><FaAngleDoubleRight className='icon' /> Register</Link></li>
+								
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' /> worker Dashboard</Link></li>
 								</ul>
 							</div>

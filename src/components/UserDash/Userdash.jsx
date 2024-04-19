@@ -356,12 +356,14 @@ const handledeleteaccount = async()=>{
                     </Tab>
                    
                     <Tab eventKey="settings" title="Settings">
-                  <div style={{display:'flex',flexDirection:'column'}}>
-                    <h3 className='text-light'>Logout from this Account</h3>
-                      <button onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Logout</button>
-                      <h3 className='text-light'>Delete the  Account</h3>
-                      <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
-                   </div>
+                 <div style={{display:'flex',height:'70vh',alignContent:'center',justifyContent:'center',textAlign:'center'}}>
+                    <div style={{display:'flex',flexDirection:'column', width:'500px',alignContent:'center',justifyContent:'center'}}>
+                      <h3 className='text-light'>Logout from this Account</h3>
+                        <button onClick={handleShow} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Logout</button>
+                        <h3 className='text-light'>Delete the  Account</h3>
+                        <button onClick={handleShow4} className='m-2 text-danger'  style={{cursor:'pointer',padding:'10px',margin:'10px' }}>Delete Account</button>
+                     </div>
+                 </div>
                     </Tab>
                 </Tabs>
             </div>
@@ -425,9 +427,9 @@ const handledeleteaccount = async()=>{
                            <>
                                 <h5 style={{color:"black"}}>Worker Name: {selectedRequest.bookingworkername}</h5>
                                 <div className='d-flex'>
-                                  <h5 style={{color:"black"}}>Booking:</h5>
+                                  <h5 style={{color:"black"}}>Booking date:</h5>
                                   <div className='ms-2'>
-                                <p style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>date: {selectedRequest.date}<span className='ms-2'>{}</span></p>
+                                <p style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}> {selectedRequest.date}</p>
                                 {/* <p style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>Time:<span className='ms-2'>{}</span></p> */}
                                 </div>
                                 </div>
@@ -585,7 +587,7 @@ const handledeleteaccount = async()=>{
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title ><h1>Delete ACcount</h1></Modal.Title>
+          <Modal.Title ><h1>Delete Account</h1></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className='editform'>
