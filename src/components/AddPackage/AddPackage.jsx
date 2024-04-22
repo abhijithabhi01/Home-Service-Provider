@@ -44,7 +44,7 @@ function AddPackage() {
         }
       }, []);
 
-    console.log(workerid);
+   // console.log(workerid);
 
       const handleaddpackage = async()=>{
           
@@ -68,6 +68,7 @@ function AddPackage() {
             const result = await AddPackageAPI(workerid,reqBody,reqHeader)
             if(result.status == 200){
               toast.success(`Package Added Successfully`)
+             
               setAddpacakgeDetails({
                 workername: "",
                 Packagename:"",
@@ -75,12 +76,10 @@ function AddPackage() {
                 price:"",
                 workimage:""
               })
-            }
-            else if(result.status == 250){
-              toast.error(`Worker Already have a Booking `)
+              setpreview("")
               setTimeout(() => {
-                toast.info(`Please Choose Another Date`)
-              }, 1500);
+                window.location.reload()
+              }, 1300);
             }
             else{
               // console.log(result.data);
@@ -110,7 +109,7 @@ function AddPackage() {
       }
 
 
-      console.log(addpackage);
+    //  console.log(addpackage);
   return (
     <>
     <div>
@@ -127,7 +126,7 @@ function AddPackage() {
 
                 <div class="addimage" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
-                  <img src={preview ? preview :"https://thumbs.dreamstime.com/b/megaphone-business-concept-text-exciting-news-vector-illustration-megaphone-business-concept-exciting-news-138699268.jpg"} alt="" style={{ height: '150px', width: '150px', borderRadius: '50%', border: '5px solid black' }} />
+                  <img src={preview ? preview :"https://png.pngtree.com/png-vector/20190505/ourmid/pngtree-vector-add-icon-png-image_1023418.jpg"} alt="" style={{ height: '150px', width: '150px', borderRadius: '50%', border: '5px solid black' }} />
                 </div>
                 <input id="file" type="file" onChange={(e) => setAddpacakgeDetails({ ...addpackage, workimage: e.target.files[0] })} style={{ display: 'none' }} />
                 

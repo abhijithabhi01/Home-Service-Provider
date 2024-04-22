@@ -8,8 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deleteworkersAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
+import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deletePackageAPI, deleteworkersAPI, getAllPackagesAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
 import AddPackage from '../AddPackage/AddPackage';
+import { BASE_URL } from '../../Services/BASE_URL';
 
 function WorkerDash() {
   const [show3, setShow3] = useState(false);
@@ -26,6 +27,7 @@ function WorkerDash() {
   const [rejected,setRejected] = useState()
   const [showbtn,setShowbtn] = useState()
   const [workdone,setworkdone] = useState()
+  const [myPackages,setmyPackages] = useState([])
   const navigate = useNavigate();
   const handlelogout = () => {
     sessionStorage.removeItem('Activeuser');
@@ -124,7 +126,7 @@ const  reqBody = {}
    
   }
  
- console.log(workrequests);
+ //console.log(workrequests);
  const handlecompletework = async(bookingid)=>{
   const id = bookingid
 const  reqBody = {}
@@ -167,6 +169,44 @@ const handledeleteaccount = async()=>{
 useEffect(()=>{
   FetchWorkRequest();
 },[handleapproveUserRequest,handledeclineUserRequest])
+
+useEffect(()=>{
+  fetchPackages()
+},[existingUser])
+
+const fetchPackages = async()=>{
+
+  const result = await getAllPackagesAPI(workerid)
+  if(result.status == 200){
+  setmyPackages(result.data)
+  }
+  else{
+    // toast.error(`Error While Fetching Packages`)
+    console.log(result);
+  }
+}
+
+const handleDeletePackage = async(id)=>{
+if(token){
+  const reqBody = {}
+  const reqHeader = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
+  const result = await deletePackageAPI(id,reqBody,reqHeader)
+  if(result.status == 200){
+    toast.success(`Package Deleted Successfully`)
+    fetchPackages()
+    }
+    else{
+      toast.error(`Please Try Again later`)
+      console.log(result);
+    }
+}
+}
+
+console.log(myPackages);
+
   return (
     <>
       <div>
@@ -293,6 +333,33 @@ useEffect(()=>{
           <Tab eventKey='Package' title='Add Package'>
           <AddPackage/>
           </Tab>
+          <Tab eventKey="mypackages" title="My Packages">
+              { myPackages.length>0 ?     <div className='worklistdiv excarddiv d-flex' >
+                     
+                     {myPackages.map((mypackages, index) => (
+                      <div className="card" key={index} style={{ flexGrow: 1, flexBasis: '200px', maxWidth: '210px', height: '340px', margin: '10px 20px 10px 20px', position: 'relative', borderRadius: 'px', backgroundColor: '#103253', boxShadow: 'rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px' }}>
+                          <img src={`${BASE_URL}/uploads/${mypackages.workimage}`} className="card-img-top" alt="Service" style={{ height: "200px", width: "100%" }} />
+                          <div className="card-body">
+                              <h5 className="card-title" style={{ color: 'white' }}>{mypackages.package}</h5>
+                              <h6 className="card-title" style={{ color: 'white' }}>{mypackages.description}</h6>
+                              <h6 className="card-title" style={{ color: 'white' }}>${mypackages.price}</h6>
+                              <p className="card-text" style={{ color: 'white', overflow: 'hidden' }}>{mypackages.service}</p>
+                              <div className="viewbtbdiv">
+                         
+                                      <button onClick={(e)=>handleDeletePackage(mypackages._id)} className="btn btn-danger viewbtn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', backgroundColor: 'rgb(247, 236, 255)', color: 'black' }}>Delete</button>
+                          
+                          
+                              </div>
+                          </div>
+                      </div>
+                  ))}
+                 </div>
+                :
+                <div className='worklistdiv excarddiv' style={{display:'flex',alignItems:'center',justifyContent:'center'}} >
+                  <h3 style={{color:'white',marginTop:"-100px"}}>No Packages Added</h3>
+                  </div>
+                }
+                    </Tab>
           <Tab eventKey="settings" title="Settings">
           <div style={{display:'flex',height:'70vh',alignContent:'center',justifyContent:'center',textAlign:'center'}}>
                     <div style={{display:'flex',flexDirection:'column', width:'500px',alignContent:'center',justifyContent:'center'}}>
@@ -304,7 +371,7 @@ useEffect(()=>{
                    </div>
                     </Tab>
                     
-          
+                 
         </Tabs>
       </div>
 
