@@ -107,7 +107,7 @@ const handlebookuser = (wid) => {
     }
   };
   
-console.log(currentCategory);
+console.log(allpacks);
     return (
         <>
             <div>

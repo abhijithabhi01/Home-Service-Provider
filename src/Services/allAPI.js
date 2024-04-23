@@ -99,8 +99,12 @@ export const AddPackageAPI = async(wid,reqBody,reqHeader)=>{
     return await commonAPI("POST",`${BASE_URL}/addpackage/${wid}`,reqBody,reqHeader)
 }
 //admin get all Packages
-export const getAllPackagesAPI = async(workerid)=>{
-    return await commonAPI('GET',`${BASE_URL}/getallpackages/${workerid}`,{},{})
+export const getAllPackagesAPI = async()=>{
+    return await commonAPI('GET',`${BASE_URL}/getallpackages/`,{},{})
+}
+//admin get all Packages
+export const getAllWPackagesAPI = async(workerid)=>{
+    return await commonAPI('GET',`${BASE_URL}/worker/getallpackages/${workerid}`,{},{})
 }
 export const deletePackageAPI = async(id,reqBody,reqHeader)=>{
     return await commonAPI('DELETE',`${BASE_URL}/delete/package/${id}`,reqBody,reqHeader)

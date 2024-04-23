@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deletePackageAPI, deleteworkersAPI, getAllPackagesAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
+import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deletePackageAPI, deleteworkersAPI, getAllPackagesAPI, getAllWPackagesAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
 import AddPackage from '../AddPackage/AddPackage';
 import { BASE_URL } from '../../Services/BASE_URL';
 
@@ -176,7 +176,7 @@ useEffect(()=>{
 
 const fetchPackages = async()=>{
 
-  const result = await getAllPackagesAPI(workerid)
+  const result = await getAllWPackagesAPI(workerid)
   if(result.status == 200){
   setmyPackages(result.data)
   }
