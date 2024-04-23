@@ -122,3 +122,7 @@ export const startWorkAPI = async(id,reqBody,reqHeader)=>{
 export const workdoneAPI = async(id,reqBody,reqHeader)=>{
     return await commonAPI("POST",`${BASE_URL}/worker/workdone/${id}`,reqBody,reqHeader)
 }
+// Review for ADMIN
+export const getreviewsforADMINAPI = async(id)=>{
+    return await commonAPI('GET',`${BASE_URL}/getreviewsforadmin/${id}`)
+}

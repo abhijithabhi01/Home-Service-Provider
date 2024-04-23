@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Assuming you are using React Router for navigation
 import { AllusersAPI, AllworkersAPI } from '../../Services/allAPI';
+import Modal from 'react-bootstrap/Modal';
 
 function Admin() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [users, setUsers] = useState([]);
   const [workers, setworkers] = useState([]);
   const getallusers = async () => {
@@ -28,6 +34,8 @@ useEffect(() => {
     getallworkers();
 }, []);
 // console.log(workers.length);
+
+
   return (
     <div>
       <h1  style={{ display: 'flex', justifyContent: 'center',marginTop:"4%",fontWeight:"bolder" }}>Welcome <span className='text-white ms-3'>Admin</span></h1>
