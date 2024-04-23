@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { FaAngleDoubleRight } from "react-icons/fa";
 import logo from '../../images/Worker-logo-design-template-vector-removebg-preview.png'
+
+
+
 const Footer = () => {
+
+    const[logger,setLogger] = useState()
+    const[existinguser,setExistingUser] = useState({})
+    useEffect(() => {
+        const currentUser = JSON.parse(sessionStorage.getItem("Activeuser"));
+        if (currentUser) {
+          setExistingUser(currentUser);
+          setLogger(currentUser.logger);
+        }
+      }, []);
+	  console.log(logger);
 	return (
 		<footer className="footer position-relative">
 			<div className="footer-top">
@@ -26,16 +40,24 @@ const Footer = () => {
 							<div className="footer-widget footer-menu">
 								<h2 className="footer-title">For User</h2>
 								<ul>
+								{logger ?
+								<li><Link to={'/user-dashboard'}><FaAngleDoubleRight className='icon' />User Dashboard</Link></li>
+								:<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />User Dashboard</Link></li>}
 									<li><Link to={'/view-service'}><FaAngleDoubleRight className='icon' />  Search for Service</Link></li>
+								{!logger &&	
+						<>
 									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Login</Link></li>
-									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Register</Link></li>
+										<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />  Register</Link></li>
+										
+						</>
+									}
 									<li><Link to={'/view-service'}><FaAngleDoubleRight className='icon' />  Booking</Link></li>
-									<li><Link to={'/login'}><FaAngleDoubleRight className='icon' />User Dashboard</Link></li>
+							
 								</ul>
 							</div>
 						</div>
 
-						<div className="col-6 col-md-6 col-lg-3">
+				{!logger &&		<div className="col-6 col-md-6 col-lg-3">
 
 							<div className="footer-widget footer-menu">
 								<h2 className="footer-title">For Worker</h2>
@@ -47,7 +69,7 @@ const Footer = () => {
 								</ul>
 							</div>
 						</div>
-
+}
 						<div className="col-6 col-md-6 col-lg-3">
 							<div className="footer-widget footer-contact">
 								<h2 className="footer-title mt-3 mt-md-0">Contact Us</h2>

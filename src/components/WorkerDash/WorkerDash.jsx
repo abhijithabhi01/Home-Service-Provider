@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { approveUserWorkRequestAPI, declineUserWorkRequestAPI, deletePackageAPI, deleteworkersAPI, getAllPackagesAPI, getAllWPackagesAPI, getworkerrequestAPI, startWorkAPI, workdoneAPI } from '../../Services/allAPI';
 import AddPackage from '../AddPackage/AddPackage';
 import { BASE_URL } from '../../Services/BASE_URL';
-
+import donelogo from '../../images/icons8-done.svg'
 function WorkerDash() {
   const [show3, setShow3] = useState(false);
   const handleClose3 = () => setShow3(false);
@@ -205,7 +205,7 @@ if(token){
 }
 }
 
-console.log(myPackages);
+console.log(workrequests);
 
   return (
     <>
@@ -247,6 +247,7 @@ console.log(myPackages);
                     <th className='status'>Status</th>
                     <th className='status'>Action</th>
                     <th className='status'>Review</th>
+                    <th className='status'>Payment Status</th>
                   </tr>
                 </thead>
                 {workrequests.length > 0 ? (
@@ -275,7 +276,9 @@ console.log(myPackages);
                        {request.workstatus === 'work completed' ?
                        <td>You Have Completed the work
 
-<div className="loader2 mb-2"></div>
+<div>
+  <img src={donelogo} alt="" />
+</div>
                        </td>
                        
                        :
@@ -307,6 +310,7 @@ console.log(myPackages);
                          }
                         </td>}
                         <td className='review'>{request.review?request.review:'no review yet'}</td>
+                        <td className='review'>{request.payment?'Payment Received':'Payment Not Received'}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -11,7 +11,7 @@ import { CancelWorkAPI, addReviewAPI, deleteuserAPI, getworklistAPI, paymentAPI 
 import Spinner from 'react-bootstrap/Spinner';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import done from '../../images/icons8-done.svg'
 
 function UserDash() {
     const [show, setShow] = useState(false);
@@ -289,7 +289,9 @@ const handledeleteaccount = async()=>{
   {request.workstatus == 'work completed' &&
 
 
-<div className="loader2"></div>
+<div>
+<img src={done} alt="" />
+</div>
 
 
 }
