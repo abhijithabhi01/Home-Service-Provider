@@ -48,9 +48,9 @@ function Navbar() {
                   <li className="nav-item">
                     <a className="nav-link" href="view-service"><i className="far fa-address-book"></i> Book Now</a>
                   </li>
-                  {/* <li className="nav-item">
-                    <a className="nav-link" href="view-service"><i className="far fa-clone"></i>Categories</a>
-                  </li> */}
+                  <li className="nav-item">
+                    <a className="nav-link" href="http://localhost:3000/category-view-div/66091cbec69b4d252042df82"><i className="far fa-clone"></i>Packages</a>
+                  </li>
                 </>
               ) : (
                 <li className="nav-item">
