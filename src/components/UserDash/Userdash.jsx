@@ -240,7 +240,7 @@ const handledeleteaccount = async()=>{
                     <th className='srno'>SR NO</th>
                     <th className='name' style={{width:'150px'}}>Worker Name</th>
                     <th className='date'>Date</th>
-                    <th className='location' style={{maxWidth:'20px'}}>Location</th>
+                    <th className='location' style={{maxWidth:'180px'}}>Location</th>
                     <th className='service'>Service</th>
                     <th className='status'>Charge</th>
                     <th className='status'>Status</th>

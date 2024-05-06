@@ -133,7 +133,7 @@ const SignIn = () => {
                         onChange={handleSelectChange}
                     >
                         <option value="">Select option</option>
-                        <option value="User">Admin</option>
+                        {/* <option value="User">Admin</option> */}
                         <option value="User">User</option>
                         <option value="Worker">Worker</option>
                     </select>
